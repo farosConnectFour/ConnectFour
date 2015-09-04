@@ -1,0 +1,7 @@
+<h2>Leaderboards</h2>
+<div>
+    <p ng-repeat="leader in leaders | orderBy:'-points'">
+        {{leader.name}}
+        {{leader.points}}
+    </p>
+</div>

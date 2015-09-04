@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <title>Connect four</title>
+    <link rel="stylesheet" href="styles/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/vendor/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="styles/game.css">
+
+
+    <script src="scripts/vendor/jquery/jquery-2.1.4.min.js"></script>
+    <script src="scripts/vendor/bootstrap/bootstrap.js"></script>
+    <script src="scripts/vendor/angular/angular.min.js"></script>
+    <script src="scripts/vendor/angular/angular-route.min.js"></script>
+    <script src="scripts/vendor/angular/ui-bootstrap-tpls-0.13.3.min.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/IndexController.js"></script>
+    <script src="scripts/controllers/ChatboxController.js"></script>
+    <script src="scripts/controllers/LeaderBoardController.js"></script>
+    <script src="scripts/controllers/LobbyController.js"></script>
+    <script src="scripts/controllers/LoginController.js"></script>
+    <script src="scripts/controllers/NewGameController.js"></script>
+    <script src="scripts/controllers/GameController.js"></script>
+    <script src="scripts/controllers/WatchController.js"></script>
+
+    <script src="scripts/services/GameService.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div ng-include="'views/menu.html'"></div>
+        </div>
+        <div class="row" ng-controller="IndexController">
+            <div class="col-md-8" ng-view></div>
+            <div class="col-md-4" ng-controller="LeaderBoardController">
+                <div ng-include="'views/leaderboard.html'"></div>
+            </div>
+        </div>
+        <div class="row" ng-controller="ChatboxController">
+            <h3>Chatbox</h3>
+        </div>
+    </div>
+</body>
+</html>
