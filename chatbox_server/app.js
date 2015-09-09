@@ -31,8 +31,9 @@ io.on('connection', function(client){
         client.emit('initialLoad', {users: connectedUsers, messages: []});
     });
     client.on('disconnect', function(){
+        console.log('disconnecting');
         storeDisconnectedUser(client.username);
-        client.broadcast.emit('removeChatter', client.username);
+        //client.broadcast.emit('removeChatter', client.username);
     });
     client.on('sendMessage', function(message){
         client.broadcast.emit('newMessage', {sender: client.username, message: message});

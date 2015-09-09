@@ -4,7 +4,7 @@
             <ul class="nav navbar-nav">
                 <li ng-show="!currentUser"><a href="#/">Login</a></li>
                 <li ng-show="currentUser"><a href="#/lobby">Lobby</a></li>
-                <li ng-show="currentUser"><a href="#/logout">Logout</a></li>
+                <li ng-show="currentUser"><a ng-click="logout()">Logout</a></li>
             </ul>
         </div>
     </div>

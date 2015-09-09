@@ -51,6 +51,12 @@ app.post("/login", passport.authenticate('local'), function(req, res)
     res.json(user);
 });
 
+app.post('/logout', function(req, res)
+{
+    req.logOut();
+    res.send(200);
+});
+
 app.listen(9999, function() {
     console.log("Listening on port 9999");
 });
