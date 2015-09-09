@@ -1,18 +1,27 @@
 (function(){
-    var leaderBoardController = function($scope){
-        $scope.leaders = [
-            {
-                name: "Silvery",
-                points: 1500
-            },{
-                name: "Bronzy",
-                points: 1350
-            },{
-                name: "Goldie",
-                points: 1625
-            }
-        ]
+    "use strict"
+    var leaderBoardController = function($scope, LeaderBoardService){
+        $scope.currentPage = 1;
+        $scope.maxSize = 6;
+        $scope.itemsPerPage = 5;
+        $scope.setPage = function(pageNo){
+            $scope.currentPage = pageNo;
+        };
+        LeaderBoardService.getAmountOfLeaders().then(function(response){
+            $scope.totalItems = response;
+        });
+
+        var getLeaders = function(){
+            LeaderBoardService.getPagedLeaders($scope.currentPage-1,$scope.itemsPerPage).then(function(response){
+                $scope.leaders = response;
+            });
+        };
+        getLeaders();
+
+        $scope.pageChanged = function() {
+            getLeaders();
+        };
     }
 
-    angular.module("app").controller("LeaderBoardController", ["$scope", leaderBoardController])
+    angular.module("app").controller("LeaderBoardController", ["$scope","LeaderBoardService",leaderBoardController])
 })();
