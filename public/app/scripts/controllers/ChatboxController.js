@@ -19,6 +19,8 @@
                 return undefined;
             };
 
+        $rootScope.socket = undefined;
+
         $scope.textInput = '';
         $scope.connectedUsers = [];
         $scope.messages = [];
@@ -34,9 +36,9 @@
             if($scope.textInput){
                 var activeTab = $scope.active();
                 if(activeTab.username === 'General'){
-                    socket.emit("sendMessage", $scope.textInput);
+                    $rootScope.socket.emit("sendMessage", $scope.textInput);
                 } else {
-                    socket.emit("sendPrivateMessage", {receiver: {id: activeTab.id, username: activeTab.username}, message: $scope.textInput})
+                    $rootScope.socket.emit("sendPrivateMessage", {receiver: {id: activeTab.id, username: activeTab.username}, message: $scope.textInput})
                 }
 
                 $scope.textInput = '';
@@ -62,44 +64,34 @@
 
 
         $rootScope.connectToChatBox = function() {
-            socket = io('http://10.1.15.94:9998');
+            $rootScope.socket = io.connect('http://10.1.15.94:9998', { 'force new connection': true });
 
-            socket.on('connect', function () {
-                //username = prompt("What is your username?");
+            $rootScope.socket.on('connect', function () {
                 username = $rootScope.currentUser.username;
-                socket.emit('join', username);
+                $rootScope.socket.emit('join', username);
             });
-
-            socket.on('disconnect', function () {
-                socket.emit('disconnect');
-            });
-
-            socket.on('initialLoad', function (data) {
+            $rootScope.socket.on('initialLoad', function (data) {
                 $scope.$apply($scope.connectedUsers = data.users);
             });
-
-            socket.on('addChatter', function (user) {
+            $rootScope.socket.on('addChatter', function (user) {
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.connectedUsers.push(user));
                 $scope.$apply($scope.messages.push({user: user.username, message: 'joined the room', logging: true}));
                 scrollTabDown(findGeneralTab());
             });
-
-            socket.on('removeChatter', function (username) {
+            $rootScope.socket.on('removeChatter', function (username) {
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(username), 1));
                 $scope.$apply($scope.messages.push({user: username, message: 'left the room', logging: true}));
                 scrollTabDown(findGeneralTab());
             });
-
-            socket.on('newMessage', function (data) {
+            $rootScope.socket.on('newMessage', function (data) {
                 $scope.messages = findGeneralTab().messages;
                 data.logging = false;
                 $scope.$apply($scope.messages.push(data));
                 scrollTabDown(findGeneralTab());
             });
-
-            socket.on('newPrivateMessage', function (data) {
+            $rootScope.socket.on('newPrivateMessage', function (data) {
                 var privateMessageTab = undefined;
                 if (data.sender === username) {
                     privateMessageTab = findTabByUsername(data.receiver);
@@ -115,6 +107,16 @@
                 $scope.$apply($scope.messages.push(data));
                 scrollTabDown(privateMessageTab);
             });
+        };
+
+        $rootScope.disconnectFromChatbox = function(){
+            $rootScope.socket.disconnect();
+            $rootScope.socket.destroy();
+
+            $scope.textInput = '';
+            $scope.connectedUsers = [];
+            $scope.messages = [];
+            $scope.tabs = [{username: 'General', messages: []}];
         };
 
         function scrollTabDown(tab){

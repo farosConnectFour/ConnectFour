@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
+        <div class="row" ng-controller="NavigationController">
             <div ng-include="'views/menu.html'"></div>
         </div>
         <div class="row" ng-controller="IndexController">
@@ -32,6 +32,7 @@
     <script src="scripts/vendor/angular/angular-route.min.js"></script>
     <script src="scripts/vendor/angular/ui-bootstrap-tpls-0.13.3.min.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/NavigationController.js"></script>
     <script src="scripts/controllers/IndexController.js"></script>
     <script src="scripts/controllers/ChatboxController.js"></script>
     <script src="scripts/controllers/LeaderBoardController.js"></script>

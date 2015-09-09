@@ -9,9 +9,22 @@ var express = require('express'),
     LocalStrategy = require('passport-local').Strategy,
     bodyParser = require('body-parser'),
     multer = require('multer'),
-    cookieParser = require('cookie-parser');
+    cookieParser = require('cookie-parser'),
+    mysql = require('mysql');
 
 var clientDir = "../public";
+var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : 'root',
+    database : 'connectFour'
+});
+
+connection.connect();
+connection.query("select * from users", function(err, rows){
+    console.log(rows);
+});
+connection.end();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -49,6 +62,12 @@ app.post("/login", passport.authenticate('local'), function(req, res)
 {
     var user = req.user;
     res.json(user);
+});
+
+app.post('/logout', function(req, res)
+{
+    req.logOut();
+    res.send(200);
 });
 
 app.listen(9999, function() {
