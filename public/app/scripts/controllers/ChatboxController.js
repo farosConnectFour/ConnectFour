@@ -64,43 +64,33 @@
 
 
         $rootScope.connectToChatBox = function() {
-            $rootScope.socket = io('http://10.1.15.94:9998');
+            $rootScope.socket = io.connect('http://10.1.15.94:9998', { 'force new connection': true });
 
             $rootScope.socket.on('connect', function () {
-                //username = prompt("What is your username?");
                 username = $rootScope.currentUser.username;
                 $rootScope.socket.emit('join', username);
             });
-
-            $rootScope.socket.on('disconnect', function () {
-                //$rootScope.socket.emit('disconnect');
-            });
-
             $rootScope.socket.on('initialLoad', function (data) {
                 $scope.$apply($scope.connectedUsers = data.users);
             });
-
             $rootScope.socket.on('addChatter', function (user) {
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.connectedUsers.push(user));
                 $scope.$apply($scope.messages.push({user: user.username, message: 'joined the room', logging: true}));
                 scrollTabDown(findGeneralTab());
             });
-
             $rootScope.socket.on('removeChatter', function (username) {
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(username), 1));
                 $scope.$apply($scope.messages.push({user: username, message: 'left the room', logging: true}));
                 scrollTabDown(findGeneralTab());
             });
-
             $rootScope.socket.on('newMessage', function (data) {
                 $scope.messages = findGeneralTab().messages;
                 data.logging = false;
                 $scope.$apply($scope.messages.push(data));
                 scrollTabDown(findGeneralTab());
             });
-
             $rootScope.socket.on('newPrivateMessage', function (data) {
                 var privateMessageTab = undefined;
                 if (data.sender === username) {
@@ -121,16 +111,7 @@
 
         $rootScope.disconnectFromChatbox = function(){
             $rootScope.socket.disconnect();
-
-            $rootScope.socket.off('connect');
-            $rootScope.socket.off('disconnect');
-            $rootScope.socket.off('initialLoad');
-            $rootScope.socket.off('addChatter');
-            $rootScope.socket.off('removeChatter');
-            $rootScope.socket.off('newMessage');
-            $rootScope.socket.off('newPrivateMessage');
-
-            $rootScope.socket = undefined;
+            $rootScope.socket.destroy();
 
             $scope.textInput = '';
             $scope.connectedUsers = [];
