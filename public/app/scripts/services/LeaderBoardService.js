@@ -4,7 +4,7 @@
         var getPagedLeaders = function(requestedPage, size){
             var req = {
                 method: "GET",
-                url: "http://localhost:8080/connectfour/api/leaderboard",
+                url: "http://10.1.15.60:8080/connectfour/api/leaderboard",
                 params: {
                     requestedPage: requestedPage,
                     size: size
@@ -17,7 +17,7 @@
         var getAmountOfLeaders = function(){
             var req = {
                 method: "GET",
-                url: "http://localhost:8080/connectfour/api/leaderboard/amount"
+                url: "http://10.1.15.60:8080/connectfour/api/leaderboard/amount"
             };
             return $http(req).then(function(response){
                 return response.data;
