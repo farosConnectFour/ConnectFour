@@ -32,7 +32,24 @@ passport.use(new LocalStrategy(
         } else {
             return done(null, false)
         }
-    }));
+    })
+);
+
+passport.serializeUser(function(user, done)
+{
+    done(null, user);
+});
+
+passport.deserializeUser(function(user, done)
+{
+    done(null, user);
+});
+
+app.post("/login", passport.authenticate('local'), function(req, res)
+{
+    var user = req.user;
+    res.json(user);
+});
 
 app.listen(9999, function() {
     console.log("Listening on port 9999");
