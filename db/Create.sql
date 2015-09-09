@@ -1,16 +1,17 @@
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-	id bigint not null,
+	userId bigint not null,
     name varchar(25) not null unique,
     password varchar(25) not null,
-    points int not null default 1000
+    points int not null default 1000,
+    PRIMARY KEY (userId)
 );
 
-INSERT INTO users (id, name, password, points) values
+INSERT INTO users (userId, name, password, points) values
 (1,"Dimitri", "pass",1100),
-(1,"Lieven", "pass",1200),
-(1,"Kwinten", "pass",850),
-(1,"Sara", "pass",975),
-(1,"Peter", "pass",925),
-(1,"Michael", "pass",950)
+(2,"Lieven", "pass",1200),
+(3,"Kwinten", "pass",850),
+(4,"Sara", "pass",975),
+(5,"Peter", "pass",925),
+(6,"Michael", "pass",950)
