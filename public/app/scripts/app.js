@@ -17,5 +17,5 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
            .when("/watch", {
                templateUrl: "views/watch.html",
                controller: "WatchController"
-           })
+           });
     });
