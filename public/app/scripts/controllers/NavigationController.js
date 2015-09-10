@@ -11,8 +11,7 @@
                 .success(function()
                 {
                     $rootScope.disconnectFromChatbox();
-                    $rootScope.currentUser = undefined;
-                    $location.url("/");
+                    $rootScope.currentUser = null;
                 });
         }
 

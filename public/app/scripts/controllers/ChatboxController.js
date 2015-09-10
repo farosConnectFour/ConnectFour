@@ -12,10 +12,13 @@
 
         $rootScope.sock = undefined;
 
+        $scope.textInput = '';
         $scope.connectedUsers = [];
+        $scope.messages = [];
+        $scope.tabs = [{username: 'General', messages: []}];
 
         $rootScope.connectToChatBox = function() {
-            $rootScope.sock = new SockJS('http://localhost:9998/chatbox');
+            $rootScope.sock = new SockJS('http://10.1.15.94:9998/chatbox');
 
             // Open the connection
             $rootScope.sock.onopen = function() {
@@ -25,21 +28,47 @@
 
             // On connection close
             $rootScope.sock.onclose = function() {
-                console.log('close');
+
             };
 
             // On receiving a message from the chatboxserver
             $rootScope.sock.onmessage = function(data) {
                 var messageData = JSON.parse(data.data);
                 if(messageData.messageType === 'login'){
-                    $scope.$apply($scope.connectedUsers.push({username: messageData.user, id: messageData.id}));
+                    if(username !== messageData.user.username) {
+                        $scope.$apply($scope.connectedUsers.push(messageData.user));
+                        $scope.messages = findGeneralTab().messages;
+                        $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
+                        scrollTabDown(findGeneralTab());
+                    }
+                } else if(messageData.messageType === 'initialLoad'){
+                    $scope.$apply($scope.connectedUsers = messageData.connectedUsers);
+                } else if(messageData.messageType === 'logout'){
+                    $scope.messages = findGeneralTab().messages;
+                    $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(messageData.username), 1));
+                    $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
+                    scrollTabDown(findGeneralTab());
+                } else if(messageData.messageType === 'message'){
+                    $scope.messages = findGeneralTab().messages;
+                    $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
+                    scrollTabDown(findGeneralTab());
                 }
             };
         };
 
+        $rootScope.disconnectFromChatbox = function(){
+            $rootScope.sock.close();
+
+            $scope.textInput = '';
+            $scope.connectedUsers = [];
+            $scope.messages = [];
+            $scope.tabs = [{username: 'General', messages: []}];
+        };
+
         $scope.sendMessage = function(){
             if($scope.textInput){
-                $rootScope.sock.send(JSON.stringify($scope.textInput));
+                $rootScope.sock.send(JSON.stringify({messageType: 'message', user: username, message: $scope.textInput}));
+                $scope.textInput = '';
             }
         };
 
@@ -191,6 +220,15 @@
             for(var i = 0; i < $scope.connectedUsers.length; i++){
                 if($scope.connectedUsers[i].username === user){
                     return $scope.connectedUsers[i];
+                }
+            }
+            return undefined;
+        }
+
+        function getIndexConnectedUserByUsername(username){
+            for(var i = 0; i < $scope.connectedUsers.length; i++){
+                if($scope.connectedUsers[i].username === username){
+                    return i;
                 }
             }
             return undefined;
