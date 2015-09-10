@@ -18,4 +18,10 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
                templateUrl: "views/watch.html",
                controller: "WatchController"
            });
+    })
+    .filter('offset', function() {
+        return function(input, start) {
+            start = parseInt(start, 10);
+            return input.slice(start);
+        };
     });

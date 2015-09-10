@@ -1,10 +1,11 @@
 <div ng-controller="LeaderBoardController">
     <h2>Leaderboards</h2>
-    <pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" ng-change="pageChanged()" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
+    <pagination total-items="totalItems" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
     <div>
-        <p ng-repeat="leader in leaders | orderBy:'-points'">
-            {{leader.name}}
-            {{leader.points}}
+        <p ng-repeat="player in players | orderBy:'-points' | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+            {{player.name}}
+            {{player.points}}
         </p>
     </div>
+    <button ng-click="update()">Update</button>
 </div>
