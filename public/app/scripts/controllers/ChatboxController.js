@@ -8,8 +8,7 @@
 
     var chatboxController = function($rootScope, $scope){
 
-        var socket,
-            username,
+        var username,
             getIndexConnectedUserByUsername = function(username){
                 for(var i = 0; i < $scope.connectedUsers.length; i++){
                     if($scope.connectedUsers[i].username === username){
