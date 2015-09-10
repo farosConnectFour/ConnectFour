@@ -1,17 +1,16 @@
 (function(){
     "use strict"
     var leaderBoardController = function($scope){
-        //pagination stuff
-        $scope.$on("playersDownloaded", function(){
-            $scope.totalItems = $scope.players.length;
-        });
+
         $scope.currentPage = 1;
         $scope.maxSize = 5;
         $scope.itemsPerPage = 5;
         $scope.setPage = function(pageNo){
             $scope.currentPage = pageNo;
         };
-
+        $scope.$watch('players', function(newValue, oldValue){
+            $scope.totalItems = newValue.length
+        });
         //socket stuff
         var stompClient;
 
