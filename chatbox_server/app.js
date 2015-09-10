@@ -11,7 +11,8 @@ var express = require('express'),
     //server = require('http').createServer(app),
     //io = require('socket.io')(server);
 
-var clients = [];
+var clients = {},
+    connectedUsers = [];
 
 
 chatbox.installHandlers(server, {prefix:'/chatbox'});
@@ -19,21 +20,27 @@ chatbox.on('connection', function(client){
     //adds this client to the clients list
     clients[client.id] = client;
 
-
     client.on('data', function(data) {
         var incomingData = JSON.parse(data);
         if(incomingData.messageType === 'login'){
-            broadcast({messageType: 'login', user: incomingData.user, id: client.id});
+            client.username = incomingData.user;
+            var connectedUser = new ConnectedUser(client.id, client.username)
+            storeConnectedUser(connectedUser);
+            sendConnectedUsersToClient(client, connectedUsers);
+            broadcast({messageType: 'login', user: connectedUser});
+        } else if(incomingData.messageType === 'message'){
+            broadcast({messageType: 'message', username: client.username, message: incomingData.message});
         }
     });
 
     // on connection close event
     client.on('close', function() {
+        storeDisconnectedUser(client.username);
         delete clients[client.id];
+        broadcast({messageType: 'logout', username: client.username});
     });
 
 });
-
 
 // Broadcast to all clients
 function broadcast(message){
@@ -42,6 +49,33 @@ function broadcast(message){
         // send the message to that client
         clients[client].write(JSON.stringify(message));
     }
+}
+
+function sendConnectedUsersToClient(client, users){
+    var message = {messageType: 'initialLoad', connectedUsers: users};
+    client.write(JSON.stringify(message));
+}
+
+function storeConnectedUser(user){
+    connectedUsers.push(user);
+}
+
+function storeDisconnectedUser(username){
+    connectedUsers.splice(getIndexConnectedUserByUsername(username), 1);
+}
+
+function getIndexConnectedUserByUsername(username){
+    for(var i = 0; i < connectedUsers.length; i++){
+        if(connectedUsers[i].username === username){
+            return i;
+        }
+    }
+    return undefined;
+}
+
+function ConnectedUser(id, username){
+    this.id = id;
+    this.username = username;
 }
 
 
