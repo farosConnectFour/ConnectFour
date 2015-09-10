@@ -4,7 +4,6 @@
 
 var express = require('express'),
     app = express(),
-    cors = require('cors'),
     http = require('http'),
     sockjs = require('sockjs'),
     chatbox = sockjs.createServer({sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'}),
@@ -14,18 +13,18 @@ var express = require('express'),
 
 var clients = [];
 
-app.use(cors({origin:'*'}));
 
 chatbox.installHandlers(server, {prefix:'/chatbox'});
 chatbox.on('connection', function(client){
-    console.log('client connected');
-
     //adds this client to the clients list
     clients[client.id] = client;
 
-    client.on('data', function(message) {
-        console.log(message);
-        broadcast(JSON.parse(message));
+
+    client.on('data', function(data) {
+        var incomingData = JSON.parse(data);
+        if(incomingData.messageType === 'login'){
+            broadcast({messageType: 'login', user: incomingData.user, id: client.id});
+        }
     });
 
     // on connection close event
@@ -34,6 +33,7 @@ chatbox.on('connection', function(client){
     });
 
 });
+
 
 // Broadcast to all clients
 function broadcast(message){

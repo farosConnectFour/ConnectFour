@@ -8,18 +8,39 @@
 
     var chatboxController = function($rootScope, $scope){
 
+        var username;
+
+        $rootScope.sock = undefined;
+
+        $scope.connectedUsers = [];
+
         $rootScope.connectToChatBox = function() {
-            var sock = new SockJS('http://localhost:9999/chatbox');
+            $rootScope.sock = new SockJS('http://localhost:9998/chatbox');
 
             // Open the connection
-            sock.onopen = function() {
-                console.log('open');
+            $rootScope.sock.onopen = function() {
+                username = $rootScope.currentUser.username;
+                $rootScope.sock.send(JSON.stringify({messageType: 'login', user: username}));
             };
 
             // On connection close
-            sock.onclose = function() {
+            $rootScope.sock.onclose = function() {
                 console.log('close');
             };
+
+            // On receiving a message from the chatboxserver
+            $rootScope.sock.onmessage = function(data) {
+                var messageData = JSON.parse(data.data);
+                if(messageData.messageType === 'login'){
+                    $scope.$apply($scope.connectedUsers.push({username: messageData.user, id: messageData.id}));
+                }
+            };
+        };
+
+        $scope.sendMessage = function(){
+            if($scope.textInput){
+                $rootScope.sock.send(JSON.stringify($scope.textInput));
+            }
         };
 
         //var username,
@@ -132,47 +153,48 @@
         //    $scope.tabs = [{username: 'General', messages: []}];
         //};
         //
-        //function scrollTabDown(tab){
-        //    var tabIndex = $scope.tabs.indexOf(tab);
-        //    document.getElementsByClassName('messages')[tabIndex].scrollTop = document.getElementsByClassName('messages')[tabIndex].scrollHeight;
-        //}
-        //
-        //function findTabByUsername(username){
-        //    var tabId = undefined;
-        //    for(var i = 0; i < $scope.tabs.length; i++){
-        //        if($scope.tabs[i].username === username){
-        //            tabId = i;
-        //            break;
-        //        }
-        //    }
-        //    if(tabId != undefined){
-        //        return $scope.tabs[tabId];
-        //    } else {
-        //        return undefined;
-        //    }
-        //}
-        //
-        //function findTabIndexByUsername(username){
-        //    for(var i = 0; i < $scope.tabs.length; i++){
-        //        if($scope.tabs[i].username === username){
-        //            return i;
-        //        }
-        //    }
-        //    return undefined;
-        //}
-        //
-        //function findGeneralTab(){
-        //    return findTabByUsername('General');
-        //}
-        //
-        //function findUserByUsername(user){
-        //    for(var i = 0; i < $scope.connectedUsers.length; i++){
-        //        if($scope.connectedUsers[i].username === user){
-        //            return $scope.connectedUsers[i];
-        //        }
-        //    }
-        //    return undefined;
-        //}
+
+        function scrollTabDown(tab){
+            var tabIndex = $scope.tabs.indexOf(tab);
+            document.getElementsByClassName('messages')[tabIndex].scrollTop = document.getElementsByClassName('messages')[tabIndex].scrollHeight;
+        }
+
+        function findTabByUsername(username){
+            var tabId = undefined;
+            for(var i = 0; i < $scope.tabs.length; i++){
+                if($scope.tabs[i].username === username){
+                    tabId = i;
+                    break;
+                }
+            }
+            if(tabId != undefined){
+                return $scope.tabs[tabId];
+            } else {
+                return undefined;
+            }
+        }
+
+        function findTabIndexByUsername(username){
+            for(var i = 0; i < $scope.tabs.length; i++){
+                if($scope.tabs[i].username === username){
+                    return i;
+                }
+            }
+            return undefined;
+        }
+
+        function findGeneralTab(){
+            return findTabByUsername('General');
+        }
+
+        function findUserByUsername(user){
+            for(var i = 0; i < $scope.connectedUsers.length; i++){
+                if($scope.connectedUsers[i].username === user){
+                    return $scope.connectedUsers[i];
+                }
+            }
+            return undefined;
+        }
 
     };
 
