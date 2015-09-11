@@ -20,14 +20,14 @@ body, html{
     margin-bottom: 3%;
 }
 .gameDiv{
-    width: 70%;
+    width: 68%;
     height: 100%;
     float:left;
     padding-left: 1%;
     padding-right: 1%;
 }
 .leaderboardDiv{
-    width: 26%;
+    width: 32%;
     height: 100%;
     float:right;
     padding-left: 1%;

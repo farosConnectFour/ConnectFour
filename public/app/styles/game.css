@@ -45,12 +45,14 @@
 .picker {
   width: 0;
   height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  border-top: 50px solid #53951f;
-  -webkit-transition: 0.2s linear; }
+  border-left: 45px solid transparent;
+  border-right: 45px solid transparent;
+  border-top: 45px solid #53951f;
+  -webkit-transition: 0.2s linear;
+}
   .picker.inactive {
-    border-top: 50px solid #84c3f8; }
+    border-top: 45px solid #111111;
+  }
 
 .options{
   margin-left: auto;
@@ -70,29 +72,5 @@
 }
 .optionRight button{
   float: right;
+  margin-right: 2%;
 }
-
-
-.postGameOptions {
-  -webkit-transition: all 1s linear;
-  visibility: visible;
-  opacity: 1;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  background-color: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  color: white; }
-  .postGameOptions .options {
-    position: relative;
-    top: 45%;
-    transform: translateY(-50%); }
-    .postGameOptions .options h1 {
-      font-style: italic;
-      font-size: 64px; }
-  .postGameOptions.inactive {
-    visibility: hidden;
-    opacity: 0; }
