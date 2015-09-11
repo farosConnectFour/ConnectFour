@@ -1,43 +1,15 @@
 (function(){
-    var lobbyController = function($scope, $modal, $location, GameService){
-        $scope.games = [
-            {
-                gameId: 1,
-                name: "Game #1",
-                host: {
-                    name: "Goldie",
-                    points: 1650
-                },
-                challenger: null,
-                rated: true,
-                watchers: []
-            },
-            {
-                gameId: 2,
-                name: "Game #2",
-                host: {
-                    name: "Silvery",
-                    points: 1500
-                },
-                challenger: null,
-                rated: false,
-                watchers: []
-            },
-            {
-                gameId: 3,
-                name: "Game #3",
-                host: {
-                    name: "Bronzy",
-                    points: 1350
-                },
-                challenger: {
-                    name: "Silvery",
-                    points: 1500
-                },
-                rated: true,
-                watchers: []
-            }
-        ];
+    var lobbyController = function($scope, $modal, $location, LobbyService){
+        $scope.games = LobbyService.getGames();
+        angular.forEach($scope.games, function(game){
+            angular.forEach($scope.players, function(player, index){
+                if(game.host == player.userId){
+                    game.host = $scope.players[index];
+                }
+            });
+            game.watchers = [];
+        });
+
         $scope.createGame = function(){
             var modelInstance = $modal.open({
                 templateUrl: "views/modals/newGame.html",
@@ -48,7 +20,7 @@
             })
         };
         $scope.joinGame = function(gameId){
-            var challenger = GameService.joinGame(gameId);
+            var challenger = LobbyService.joinGame(gameId);
             angular.forEach($scope.games, function(game, index){
                 if(game.gameId == gameId){
                     $scope.games[index].challenger = challenger;
@@ -58,7 +30,7 @@
 
         };
         $scope.watchGame = function(gameId){
-            var watcher = GameService.watchGame(gameId);
+            var watcher = LobbyService.watchGame(gameId);
             angular.forEach($scope.games, function(game, index){
                 if(game.gameId == gameId){
                     $scope.games[index].watchers.push(watcher);
@@ -67,7 +39,13 @@
             $location.path("/watch")
         };
 
-    }
+        $scope.currentPage = 1;
+        $scope.maxSize = 5;
+        $scope.itemsPerPage = 6;
+        $scope.setPage = function(pageNo){
+            $scope.currentPage = pageNo;
+        };
+    };
 
-    angular.module("app").controller("LobbyController", ["$scope", "$modal", "$location", "GameService", lobbyController])
+    angular.module("app").controller("LobbyController", ["$scope", "$modal", "$location", "LobbyService", lobbyController])
 })();

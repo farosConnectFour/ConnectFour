@@ -8,9 +8,6 @@
         $scope.setPage = function(pageNo){
             $scope.currentPage = pageNo;
         };
-        $scope.$watch('players', function(newValue, oldValue){
-            $scope.totalItems = newValue.length
-        });
         //socket stuff
         var stompClient;
 

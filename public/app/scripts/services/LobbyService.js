@@ -1,5 +1,5 @@
 (function(){
-    var GameService = function(){
+    var LobbyService = function(){
         return {
             createGame: function(newGame){
                 return {
@@ -27,9 +27,18 @@
                     name: "Watcher",
                     points: 1100
                 }
+            },
+            getGames: function(){
+                return [
+                    new Game(1,"Game numero 1", 1, true),
+                    new Game(2,"Game numero 2", 2, true),
+                    new Game(3,"Game numero 3", 3, false),
+                    new Game(4,"Game numero 4", 4, true),
+                    new Game(5,"Game numero 5", 5, false)
+                ];
             }
         }
     }
 
-    angular.module("app").service("GameService", [GameService])
+    angular.module("app").service("LobbyService", [LobbyService])
 })();
