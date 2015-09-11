@@ -25,7 +25,7 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
                 start = parseInt(start, 10);
                 return input.slice(start);
             } else{
-                return [];FrietFrie
+                return [];
             }
         };
     });
