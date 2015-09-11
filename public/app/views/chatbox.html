@@ -8,7 +8,7 @@
         </aside>
         <section id="textbox">
             <tabset>
-                <tab class='chatTabs' ng-repeat="tab in tabs" active="tab.active">
+                <tab class='chatTabs' ng-repeat="tab in tabs" ng-click="scrollDown(tab)" active="tab.active">
                     <tab-heading>{{tab.username}}</tab-heading>
                     <!--<tab-heading>{{tab.username}}  <i class="glyphicon glyphicon-remove" ng-show="isPrivateChatTab(tab.username)" ng-click="closePrivateChatTab(tab.username)"></i></a></tab-heading>-->
                     <ul class="messages">

@@ -4,33 +4,41 @@
 
 var express = require('express'),
     app = express(),
-    cors = require('cors'),
     http = require('http'),
     sockjs = require('sockjs'),
     chatbox = sockjs.createServer({sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'}),
     server = http.createServer();
-    //server = require('http').createServer(app),
-    //io = require('socket.io')(server);
 
-var clients = [];
+var clients = {},
+    connectedUsers = [];
 
-app.use(cors({origin:'*'}));
 
 chatbox.installHandlers(server, {prefix:'/chatbox'});
 chatbox.on('connection', function(client){
-    console.log('client connected');
-
     //adds this client to the clients list
     clients[client.id] = client;
 
-    client.on('data', function(message) {
-        console.log(message);
-        broadcast(JSON.parse(message));
+    client.on('data', function(data) {
+        var incomingData = JSON.parse(data);
+        if(incomingData.messageType === 'login'){
+            client.username = incomingData.user;
+            var connectedUser = new ConnectedUser(client.id, client.username)
+            storeConnectedUser(connectedUser);
+            sendConnectedUsersToClient(client, connectedUsers);
+            broadcast({messageType: 'login', user: connectedUser});
+        } else if(incomingData.messageType === 'message'){
+            broadcast({messageType: 'message', username: client.username, message: incomingData.message});
+        } else if(incomingData.messageType === 'privateMessage'){
+            findClientByUsername(incomingData.receiver.username).write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver.username, message: incomingData.message}));
+            (clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver.username, message: incomingData.message})));
+        }
     });
 
     // on connection close event
     client.on('close', function() {
+        storeDisconnectedUser(client.username);
         delete clients[client.id];
+        broadcast({messageType: 'logout', username: client.username});
     });
 
 });
@@ -44,44 +52,41 @@ function broadcast(message){
     }
 }
 
+function sendConnectedUsersToClient(client, users){
+    var message = {messageType: 'initialLoad', connectedUsers: users};
+    client.write(JSON.stringify(message));
+}
 
-//var connectedUsers = [],
-//    storeConnectedUser = function(user){
-//        connectedUsers.push(user);
-//    },
-//    storeDisconnectedUser = function(username){
-//        connectedUsers.splice(getIndexConnectedUserByUsername(username), 1);
-//    },
-//    getIndexConnectedUserByUsername = function(username){
-//        for(var i = 0; i < connectedUsers.length; i++){
-//            if(connectedUsers[i].username === username){
-//                return i;
-//            }
-//        }
-//        return undefined;
-//    };
+function storeConnectedUser(user){
+    connectedUsers.push(user);
+}
 
+function storeDisconnectedUser(username){
+    connectedUsers.splice(getIndexConnectedUserByUsername(username), 1);
+}
 
-//io.on('connection', function(client){
-//    client.on('join', function(username){
-//        client.username = username;
-//        storeConnectedUser({username: username, id: client.id, messages: []});
-//        client.broadcast.emit('addChatter', {username: username, id: client.id, messages: []});
-//        client.emit('initialLoad', {users: connectedUsers, messages: []});
-//    });
-//    client.on('disconnect', function(){
-//        storeDisconnectedUser(client.username);
-//        client.broadcast.emit('removeChatter', client.username);
-//    });
-//    client.on('sendMessage', function(message){
-//        client.broadcast.emit('newMessage', {sender: client.username, message: message});
-//        client.emit('newMessage', {sender: client.username, message: message});
-//    });
-//    client.on('sendPrivateMessage', function(data){
-//        client.emit('newPrivateMessage', {sender: client.username, receiver: data.receiver.username, message: data.message});
-//        client.to(data.receiver.id).emit('newPrivateMessage', {sender: client.username, receiver: data.receiver.username, message: data.message});
-//    });
-//});
+function getIndexConnectedUserByUsername(username){
+    for(var i = 0; i < connectedUsers.length; i++){
+        if(connectedUsers[i].username === username){
+            return i;
+        }
+    }
+    return undefined;
+}
+
+function ConnectedUser(id, username){
+    this.id = id;
+    this.username = username;
+}
+
+function findClientByUsername(username){
+    for (var client in clients){
+        if(clients[client].username === username){
+            return clients[client];
+        }
+    }
+    return undefined;
+}
 
 server.listen(9998, function(){
     console.log("Listening on port 9998");
