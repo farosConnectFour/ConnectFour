@@ -1,10 +1,20 @@
-<div>
-    <div>
-        <input type="text" ng-model="newGame.name" ng-required="true">
-        <input type="checkbox" ng-model="newGame.rated">
-    </div>
-    <div>
-        <button class="btn" ng-click="create()">Create</button>
-        <button class="btn" ng-click="cancel()">Cancel</button>
-    </div>
+<div class="modal-header">
+    <h3>Create Game Room</h3>
 </div>
+<form>
+<div class="modal-body">
+        <fieldset>
+            <div class="form-group">
+                <label>Room name</label>
+                <input type="text" class="form-control" ng-model="newGame.name" ng-required="true" placeholder="room name">
+            </div>
+            <label>
+                <input type="checkbox" ng-model="newGame.rated"> Ranked
+            </label>
+        </fieldset>
+</div>
+<div class="modal-footer">
+    <button class="btn" ng-click="create()">Create</button>
+    <button class="btn" ng-click="cancel()">Cancel</button>
+</div>
+</form>
