@@ -20,7 +20,9 @@ var connection = mysql.createConnection({
     password : 'root',
     database : 'connectFour'
 });
+var isConnectedIndex;
 
+var connectedUsers = [];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,6 +39,7 @@ app.use(express.static(clientDir + "/libs"));
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
+
         var connection = mysql.createConnection({
             host     : 'localhost',
             user     : 'root',
@@ -47,18 +50,15 @@ passport.use(new LocalStrategy(
 
         connection.connect();
         connection.query("select * from users where name = ?", username, function(err, rows){
-            if(rows){
+            if(rows.length){
                 foundPassword = rows[0].password;
             }
-            if(foundPassword && foundPassword === password){
+            if(foundPassword && foundPassword === password && !isConnected(rows[0].name)){
                 return done(null, {username: rows[0].name, id: rows[0].userId})
-            } else {
-                return done(null, false)
             }
+            return done(null, false)
         });
         connection.end();
-
-
     })
 );
 
@@ -74,11 +74,15 @@ passport.deserializeUser(function(user, done)
 
 app.post("/login", passport.authenticate('local'), function(req, res)
 {
+    connectedUsers.push(req.user.username);
     res.json(req.user);
 });
 
 app.post('/logout', function(req, res)
 {
+    if(req.user) {
+        disconnectUser(req.user.username);
+    }
     req.logOut();
     res.sendStatus(200);
 });
@@ -86,3 +90,16 @@ app.post('/logout', function(req, res)
 app.listen(9999, function() {
     console.log("Listening on port 9999");
 });
+
+function isConnected(username){
+    for(isConnectedIndex = 0; isConnectedIndex < connectedUsers.length; isConnectedIndex++){
+        if(connectedUsers[isConnectedIndex] === username){
+            return true;
+        }
+    }
+    return false;
+}
+
+function disconnectUser(username){
+    connectedUsers.splice(connectedUsers.indexOf(username), 1);
+}
