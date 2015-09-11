@@ -21,7 +21,11 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
     })
     .filter('offset', function() {
         return function(input, start) {
-            start = parseInt(start, 10);
-            return input.slice(start);
+            if (input) {
+                start = parseInt(start, 10);
+                return input.slice(start);
+            } else{
+                return [];FrietFrie
+            }
         };
     });

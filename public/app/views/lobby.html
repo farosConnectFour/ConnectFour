@@ -1,6 +1,9 @@
 <h2>Lobby</h2>
-<div class="col-md-12" ng-repeat="game in games">
-    <div class="col-md-4">
+<div>
+    <pagination total-items="games.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
+</div>
+<div class="col-md-5 lobbyGame" ng-repeat="game in games | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+    <div class="col-md-8">
         <p>{{game.name}}</p>
         <p>Host: {{game.host.name}} ({{game.host.points}})</p>
         <p ng-show="game.challenger != null">Challenger: {{game.challenger.name}} ({{game.challenger.points}})</p>
@@ -12,4 +15,6 @@
         <button class="btn" ng-show="game.challenger !== null" ng-click="watchGame(game.gameId)">Watch!</button>
     </div>
 </div>
-<button class="btn" ng-click="createGame()">+ Create Game</button>
+<div class="lobbyGameCreateButton">
+    <button class="btn" ng-click="createGame()">+ Create Game</button>
+</div>
