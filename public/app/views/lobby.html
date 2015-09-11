@@ -2,15 +2,15 @@
 <div>
     <pagination total-items="games.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
 </div>
-<div class="col-md-5 lobbyGame" ng-repeat="game in games | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
-    <div class="col-md-8">
+<div class="lobbyGame" ng-repeat="game in games | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+    <div class="">
         <p>{{game.name}}</p>
         <p>Host: {{game.host.name}} ({{game.host.points}})</p>
         <p ng-show="game.challenger != null">Challenger: {{game.challenger.name}} ({{game.challenger.points}})</p>
         <p>Rules: {{game.rated ? "Rated" : "Unrated"}} game</p>
         <p ng-show="game.watchers.length > 0">Watchers: <span ng-repeat="watcher in game.watchers">{{watcher.name}} </span></p>
     </div>
-    <div class="col-md-4">
+    <div class="">
         <button class="btn" ng-show="game.challenger === null" ng-click="joinGame(game.gameId)">Join!</button>
         <button class="btn" ng-show="game.challenger !== null" ng-click="watchGame(game.gameId)">Watch!</button>
     </div>

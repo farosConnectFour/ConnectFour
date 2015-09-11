@@ -9,21 +9,16 @@
     <link rel="stylesheet" href="styles/game.css">
     <link rel="stylesheet" href="styles/chatbox.css">
     <link rel="stylesheet" href="styles/lobbyGame.css">
+    <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
     <div class="container">
-        <div class="row" ng-controller="NavigationController">
-            <div ng-include="'views/menu.html'"></div>
+        <div class="navigationDiv" ng-controller="NavigationController" ng-include="'views/menu.html'"></div>
+        <div class="contentDiv" ng-controller="IndexController">
+            <div class="gameDiv" ng-view></div>
+            <div class="leaderboardDiv" ng-controller="LeaderBoardController" ng-include="'views/leaderboard.html'"></div>
         </div>
-        <div class="row" ng-controller="IndexController">
-            <div class="col-md-8" ng-view></div>
-            <div class="col-md-4">
-                <div  ng-controller="LeaderBoardController" ng-include="'views/leaderboard.html'"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div ng-include="'views/chatbox.html'"></div>
-        </div>
+        <div class="chatDiv" ng-controller="ChatboxController" ng-include="'views/chatbox.html'"></div>
     </div>
 
     <script src="scripts/vendor/socketio/socket.io.js"></script>

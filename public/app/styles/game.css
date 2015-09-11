@@ -1,41 +1,46 @@
 .information {
-  text-align: center; }
+  text-align: center;
+  height: 6%;
+}
+.gameField{
+  height: 84%;
+}
 
-.field {
+.fieldTable {
   margin-left: auto;
   margin-right: auto;
-  background-color: #84c3f8; }
-  .field th {
-    padding: 10px; }
-  .field td {
-    padding: 10px; }
+  background-color: #84c3f8;
+  table-layout: fixed;
+  width: 95%;
+  height: 100%;
+}
+.fieldTable th {
+  padding: 5px;
+}
+.fieldTable td {
+  padding: 5px;
+}
+
+.circle{
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  width: 90%;
+  height: 90%;
+  opacity: 1;
+}
 
 .red {
   background-color: #d50004;
-  -moz-border-radius: 50px;
-  -webkit-border-radius: 50px;
-  border-radius: 50px;
-  width: 100px;
-  height: 100px;
-  opacity: 1; }
+}
 
 .yellow {
   background-color: #ecec00;
-  -moz-border-radius: 50px;
-  -webkit-border-radius: 50px;
-  border-radius: 50px;
-  width: 100px;
-  height: 100px;
-  opacity: 1; }
+ }
 
 .empty {
   background-color: grey;
-  -moz-border-radius: 50px;
-  -webkit-border-radius: 50px;
-  border-radius: 50px;
-  width: 100px;
-  height: 100px;
-  opacity: 1; }
+; }
 
 .picker {
   width: 0;
@@ -46,6 +51,27 @@
   -webkit-transition: 0.2s linear; }
   .picker.inactive {
     border-top: 50px solid #84c3f8; }
+
+.options{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.5%;
+  width: 95%;
+  height: 9%;
+}
+
+.optionLeft{
+  width: 60%;
+  float: left;
+}
+.optionRight{
+  width: 40%;
+  float: right;
+}
+.optionRight button{
+  float: right;
+}
+
 
 .postGameOptions {
   -webkit-transition: all 1s linear;

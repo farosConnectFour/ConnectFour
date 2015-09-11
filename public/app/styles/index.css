@@ -1,0 +1,39 @@
+body, html{
+    height: 100%;
+    width: 1200px;
+    margin: 0 auto;
+}
+.container{
+    height: 100%;
+    width: 100%;
+}
+.navigationDiv{
+    padding: 1%;
+    height: 8%;
+    min-height: 70px;
+    margin-bottom: 0.5%;
+}
+.contentDiv{
+    width: 100%;
+    height: 55%;
+    min-height: 575px;
+    margin-bottom: 3%;
+}
+.gameDiv{
+    width: 70%;
+    height: 100%;
+    float:left;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+.leaderboardDiv{
+    width: 26%;
+    height: 100%;
+    float:right;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+.chatDiv{
+    clear: both;
+    height: 26%;
+}
