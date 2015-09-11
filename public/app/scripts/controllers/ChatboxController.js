@@ -118,7 +118,7 @@
         };
 
         $scope.closePrivateChatTab = function(username){
-            findTabByUsername(username).messages = [];;
+            findTabByUsername(username).messages = [];
             $scope.tabs.splice(findTabIndexByUsername(username), 1);
         };
 
