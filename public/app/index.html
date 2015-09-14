@@ -18,7 +18,7 @@
             <div class="gameDiv" ng-view></div>
             <div class="leaderboardDiv" ng-include="'views/leaderboard.html'"></div>
         </div>
-        <div class="chatDiv" ng-controller="ChatboxController" ng-include="'views/chatbox.html'"></div>
+        <div class="chatDiv" ng-include="'views/chatbox.html'"></div>
     </div>
 
     <script src="scripts/vendor/socketio/socket.io.js"></script>
@@ -36,10 +36,12 @@
     <script src="scripts/models/Game.js"></script>
     <script src="scripts/models/PlayedGame.js"></script>
 
+    <script src="scripts/services/SocketFactory.js"></script>
     <script src="scripts/services/LobbyService.js"></script>
     <script src="scripts/services/UserService.js"></script>
     <script src="scripts/services/ConnectedUsersService.js"></script>
     <script src="scripts/services/PlayedGamesService.js"></script>
+    <script src="scripts/services/ChatboxService.js"></script>
 
     <script src="scripts/controllers/NavigationController.js"></script>
     <script src="scripts/controllers/IndexController.js"></script>
