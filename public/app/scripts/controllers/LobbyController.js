@@ -16,7 +16,7 @@
                 controller: "NewGameController"
             });
             modelInstance.result.then(function(data){
-                $scope.games.push(data);
+                $scope.games.push(data.game);
             });
         };
         $scope.joinGame = function(gameId){

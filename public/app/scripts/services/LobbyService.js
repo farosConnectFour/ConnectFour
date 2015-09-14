@@ -3,13 +3,13 @@
 
         var socket;
 
-        socketFactory.getSocket(function(socket){
-            this.socket = socket;
+        socketFactory.getSocket(function(s){
+            socket = s;
         });
 
         return {
             createGame: function(newGame, callback){
-                socket.send({"messageType" : "createGame", "game" : newGame});
+                socket.send(JSON.stringify({"messageType" : "createGame", "game" : newGame}));
                 socket.onmessage = function(data){
                     var messageData = JSON.parse(data.data);
                     if(messageData.messageType === "gameCreated"){

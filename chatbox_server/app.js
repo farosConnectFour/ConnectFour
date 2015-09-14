@@ -23,7 +23,6 @@ chatbox.on('connection', function(client){
         var incomingData = JSON.parse(data);
         if(incomingData.messageType === 'login'){
             client.user = incomingData.user;
-            console.log(client.user);
             var connectedUser = new ConnectedUser(client.id, client.user.username, client.user.userId);
             storeConnectedUser(connectedUser);
             sendConnectedUsersToClient(client, connectedUsers);
@@ -85,6 +84,15 @@ function ConnectedUser(clientId, username, userId){
     this.clientId = clientId;
     this.username = username;
     this.userId = userId;
+}
+
+function Game(gameId, name, host, challenger, rated, watchers){
+    this.gameId = gameId;
+    this.name = name;
+    this.host = host;
+    this.rated = rated;
+    this.challenger = challenger;
+    this.watchers = watchers;
 }
 
 function findClientByUsername(username){

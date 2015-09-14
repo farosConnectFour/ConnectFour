@@ -5,16 +5,15 @@
             rated: true
         };
         $scope.create = function(){
-            var newGame = LobbyService.createGame($scope.newGame, function(data){
+            LobbyService.createGame($scope.newGame, function(data){
                 console.log(data);
-                console.log($scope.games);
+                $modalInstance.close(data);
             });
-            $modalInstance.close(newGame);
         };
         $scope.cancel = function(){
             $modalInstance.dismiss("cancel");
         }
-    }
+    };
 
     angular.module("app").controller("NewGameController", ["$scope", "$modalInstance", "LobbyService", newGameController])
 })();
