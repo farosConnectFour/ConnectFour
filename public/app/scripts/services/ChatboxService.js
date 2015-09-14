@@ -26,7 +26,7 @@
     var onMessage = function(callback){
         socket.onmessage = function(data){
             var messageData = JSON.parse(data.data);
-            if(data.messageType === "login" || data.messageType === "privateMessage" || data.messageType === "initialLoad" || data.messageType === "message" || data.messageType === "logout"){
+            if(messageData.messageType === "login" || messageData.messageType === "privateMessage" || messageData.messageType === "initialLoad" || messageData.messageType === "message" || messageData.messageType === "logout"){
                 callback(messageData);
             }
         }

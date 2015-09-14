@@ -5,16 +5,15 @@
 (function() {
     "use strict";
 
-    var socket,
-        connected = false;
+    var socket;
+
 
     var getSocket = function(callback) {
-        if (connected) {
+        if (socket) {
             callback(socket);
         } else {
             socket = new SockJS('http://10.1.15.94:9998/chatbox');
             socket.onopen = function(){
-                connected = true;
                 callback(socket);
                 console.log('connected');
             };
@@ -23,7 +22,6 @@
 
     var destroySocket = function(){
         socket = undefined;
-        connected = false;
         console.log('disconnected');
     };
 

@@ -42,5 +42,5 @@
         }
     }
 
-    angular.module("app").service("LobbyService", [LobbyService])
+    angular.module("app").service("LobbyService", ["socketFactory", LobbyService])
 })();
