@@ -11,8 +11,8 @@ var express = require('express'),
 
 var clients = {},
     connectedUsers = [],
-    rooms = [],
-    currentRoomId = 1;
+    games = [],
+    currentGameId = 1;
 
 chatbox.installHandlers(server, {prefix:'/chatbox'});
 chatbox.on('connection', function(client){
@@ -31,12 +31,14 @@ chatbox.on('connection', function(client){
             broadcast({messageType: 'message', username: client.user.username, message: incomingData.message});
         } else if(incomingData.messageType === 'privateMessage'){
             findClientByUsername(incomingData.receiver).write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message}));
-            (clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message})));
-        }else if(incomingData.messageType === "createGame"){
-            var newGame = new Game(currentRoomId,incomingData.game.name,client.user.id,null,incomingData.game.rated, []);
-            currentRoomId++;
-            rooms.push(newGame);
+            clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message}));
+        } else if(incomingData.messageType === "createGame"){
+            var newGame = new Game(currentGameId,incomingData.game.name,client.user.id,null,incomingData.game.rated, []);
+            currentGameId++;
+            games.push(newGame);
             broadcast({messageType: "gameCreated", game: newGame});
+        } else if(incomingData.messageType === "initLoadGames"){
+            clients[client.id].write(JSON.stringify({messageType: 'initGamesLoaded', "games" : games }));
         }
     });
 
