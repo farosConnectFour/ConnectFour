@@ -13,10 +13,10 @@
 </head>
 <body>
     <div class="container">
-        <div class="navigationDiv" ng-controller="NavigationController" ng-include="'views/menu.html'"></div>
+        <div class="navigationDiv" ng-include="'views/menu.html'"></div>
         <div class="contentDiv" ng-controller="IndexController">
             <div class="gameDiv" ng-view></div>
-            <div class="leaderboardDiv" ng-controller="LeaderBoardController" ng-include="'views/leaderboard.html'"></div>
+            <div class="leaderboardDiv" ng-include="'views/leaderboard.html'"></div>
         </div>
         <div class="chatDiv" ng-controller="ChatboxController" ng-include="'views/chatbox.html'"></div>
     </div>
