@@ -8,7 +8,7 @@
 
     var socket;
     var onReadyCallback;
-    var user;
+    var currentUser;
 
     var onReady = function(callback){
         if(socket) {
@@ -18,9 +18,9 @@
         }
     };
 
-    var setUsername = function(username){
-        user = username;
-        socket.send(JSON.stringify({messageType: 'login', user: username}));
+    var setUser = function(user){
+        currentUser = user;
+        socket.send(JSON.stringify({messageType: 'login', user: currentUser}));
     };
 
     var onMessage = function(callback){
@@ -56,7 +56,7 @@
 
         this.connect = connect;
         this.onReady = onReady;
-        this.setUsername = setUsername;
+        this.setUser = setUser;
         this.onMessage = onMessage;
         this.sendMessage = sendMessage;
         this.disconnect = disconnect;
