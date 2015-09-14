@@ -10,8 +10,9 @@ var express = require('express'),
     server = http.createServer();
 
 var clients = {},
-    connectedUsers = [];
-
+    connectedUsers = [],
+    rooms = [],
+    currentRoomId = 1;
 
 chatbox.installHandlers(server, {prefix:'/chatbox'});
 chatbox.on('connection', function(client){
@@ -31,6 +32,11 @@ chatbox.on('connection', function(client){
         } else if(incomingData.messageType === 'privateMessage'){
             findClientByUsername(incomingData.receiver.username).write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver.username, message: incomingData.message}));
             (clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver.username, message: incomingData.message})));
+        } else if(incomingData.messageType === "createGame"){
+            var newGame = new Game(currentRoomId,incomingData.game.name,client.user.id,null,incomingData.game.rated, []);
+            currentRoomId++;
+            rooms.push(newGame);
+            broadcast({messageType: "gameCreated", game: newGame});
         }
     });
 

@@ -17,7 +17,7 @@
             });
             modelInstance.result.then(function(data){
                 $scope.games.push(data);
-            })
+            });
         };
         $scope.joinGame = function(gameId){
             var challenger = LobbyService.joinGame(gameId);

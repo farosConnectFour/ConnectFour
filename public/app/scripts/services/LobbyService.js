@@ -1,21 +1,23 @@
 (function(){
-    var LobbyService = function(){
+    var LobbyService = function(socketFactory){
+
+        var socket;
+
+        socketFactory.getSocket(function(socket){
+            this.socket = socket;
+        });
+
         return {
-            createGame: function(newGame){
-                return {
-                    gameId: 4,
-                    name: newGame.name,
-                    host: {
-                        name: "Goldie",
-                        points: 1650
-                    },
-                    challenger: null,
-                    rated: newGame.rated,
-                    watchers: []
-                }
+            createGame: function(newGame, callback){
+                socket.send({"messageType" : "createGame", "game" : newGame});
+                socket.onmessage = function(data){
+                    var messageData = JSON.parse(data.data);
+                    if(messageData.messageType === "gameCreated"){
+                        callback(messageData);
+                    }
+                };
             },
             joinGame: function(gameId){
-                //Vraag server als Current User game mag joinen, zoja return de challenger in json
                 return {
                     name: "Challenger",
                     points: 1100

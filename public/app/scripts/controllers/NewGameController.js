@@ -3,9 +3,12 @@
         $scope.newGame = {
             name: null,
             rated: true
-        }
+        };
         $scope.create = function(){
-            var newGame = LobbyService.createGame($scope.newGame);
+            var newGame = LobbyService.createGame($scope.newGame, function(data){
+                console.log(data);
+                console.log($scope.games);
+            });
             $modalInstance.close(newGame);
         };
         $scope.cancel = function(){
