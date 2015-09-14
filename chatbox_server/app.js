@@ -42,6 +42,9 @@ chatbox.on('connection', function(client){
 
     // on connection close event
     client.on('close', function() {
+        
+
+
         storeDisconnectedUser(client.user.username);
         delete clients[client.id];
         broadcast({messageType: 'logout', username: client.user.username});
@@ -68,7 +71,10 @@ function storeConnectedUser(user){
 }
 
 function storeDisconnectedUser(username){
-    connectedUsers.splice(getIndexConnectedUserByUsername(username), 1);
+    var index = getIndexConnectedUserByUsername(username);
+    if(index > -1){
+        connectedUsers.splice(index, 1);
+    }
 }
 
 function getIndexConnectedUserByUsername(username){
