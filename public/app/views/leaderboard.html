@@ -1,21 +1,40 @@
 <div>
-    <h2>Leaderboards</h2>
+    <h3>Leaderboards</h3>
     <pagination total-items="players.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
-    <div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <td>Username</td>
-                    <td>Ranking Points</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="player in players | orderBy:'-points' | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
-                    <td>{{player.name}}</td>
-                    <td>{{player.points}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Username</td>
+                <td>Ranking Points</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="player in players | orderBy:'-points' | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+                <td>{{player.name}}</td>
+                <td>{{player.points}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>Latest Games</h4>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Game ID</td>
+            <td>Player 1</td>
+            <td>Player 2</td>
+            <td>Winner</td>
+            <td>Ranked</td>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="game in latestGames">
+                <td>{{game.gameId}}</td>
+                <td>{{game.player1}}</td>
+                <td>{{game.player2}}</td>
+                <td>{{game.winner}}</td>
+                <td>{{game.ranked}}</td>
+            </tr>
+        </tbody>
+    </table>
     <button ng-click="update()">Update</button>
 </div>
