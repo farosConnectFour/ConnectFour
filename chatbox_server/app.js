@@ -21,24 +21,25 @@ chatbox.on('connection', function(client){
     client.on('data', function(data) {
         var incomingData = JSON.parse(data);
         if(incomingData.messageType === 'login'){
-            client.username = incomingData.user;
-            var connectedUser = new ConnectedUser(client.id, client.username)
+            client.user = incomingData.user;
+            console.log(client.user);
+            var connectedUser = new ConnectedUser(client.id, client.user.username, client.user.userId);
             storeConnectedUser(connectedUser);
             sendConnectedUsersToClient(client, connectedUsers);
             broadcast({messageType: 'login', user: connectedUser});
         } else if(incomingData.messageType === 'message'){
-            broadcast({messageType: 'message', username: client.username, message: incomingData.message});
+            broadcast({messageType: 'message', username: client.user.username, message: incomingData.message});
         } else if(incomingData.messageType === 'privateMessage'){
-            findClientByUsername(incomingData.receiver.username).write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver.username, message: incomingData.message}));
-            (clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver.username, message: incomingData.message})));
+            findClientByUsername(incomingData.receiver).write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message}));
+            (clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message})));
         }
     });
 
     // on connection close event
     client.on('close', function() {
-        storeDisconnectedUser(client.username);
+        storeDisconnectedUser(client.user.username);
         delete clients[client.id];
-        broadcast({messageType: 'logout', username: client.username});
+        broadcast({messageType: 'logout', username: client.user.username});
     });
 
 });
@@ -74,14 +75,15 @@ function getIndexConnectedUserByUsername(username){
     return undefined;
 }
 
-function ConnectedUser(id, username){
-    this.id = id;
+function ConnectedUser(clientId, username, userId){
+    this.clientId = clientId;
     this.username = username;
+    this.userId = userId;
 }
 
 function findClientByUsername(username){
     for (var client in clients){
-        if(clients[client].username === username){
+        if(clients[client].user.username === username){
             return clients[client];
         }
     }
