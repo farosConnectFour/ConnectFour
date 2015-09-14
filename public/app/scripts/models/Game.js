@@ -1,8 +1,8 @@
-function Game(gameId, name, host, rated){
+function Game(gameId, name, host, challenger, rated, watchers){
     this.gameId = gameId;
     this.name = name;
     this.host = host;
     this.rated = rated;
-    this.challenger = null;
-    this.watchers = [];
+    this.challenger = challenger;
+    this.watchers = watchers;
 }

@@ -30,11 +30,11 @@
             },
             getGames: function(){
                 return [
-                    new Game(1,"Game numero 1", 1, true),
-                    new Game(2,"Game numero 2", 2, true),
-                    new Game(3,"Game numero 3", 3, false),
-                    new Game(4,"Game numero 4", 4, true),
-                    new Game(5,"Game numero 5", 5, false)
+                    new Game(1,"Game numero 1", 1, null, true, []),
+                    new Game(2,"Game numero 2", 2, null, true, []),
+                    new Game(3,"Game numero 3", 3, null, false, []),
+                    new Game(4,"Game numero 4", 4, null, true, []),
+                    new Game(5,"Game numero 5", 5, null, false, [])
                 ];
             }
         }
