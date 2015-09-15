@@ -1,27 +1,34 @@
 (function(){
     var lobbyController = function($scope, $modal, $location, LobbyService){
-        $scope.games = LobbyService.getGames();
-        angular.forEach($scope.games, function(game){
-            angular.forEach($scope.players, function(player, index){
-                if(game.host == player.userId){
-                    game.host = $scope.players[index];
-                }
+        $scope.$on("initGamesLoaded", function(event, messageData){
+            $scope.games = messageData.games;
+            angular.forEach($scope.games, function(game){
+                angular.forEach($scope.players, function(scopePlayer, index){
+                    if(game.host == scopePlayer.userId){
+                        game.host = $scope.players[index];
+                    }
+                    if(game.challenger == scopePlayer.userId){
+                        game.challenger = $scope.players[index];
+                    }
+                });
             });
-            game.watchers = [];
         });
+        LobbyService.getGames();
 
         $scope.createGame = function(){
             var modelInstance = $modal.open({
                 templateUrl: "views/modals/newGame.html",
                 controller: "NewGameController"
             });
-            $scope.$on("gameCreated", function(event, args){
-                console.log(args);
-            });
-
-
-            modelInstance.result.then(function(data){
-                $scope.games.push(data.game);
+            $scope.$on("gameCreated", function(event, messageData){
+                $scope.games.push(messageData.game);
+                angular.forEach($scope.games, function(game){
+                    angular.forEach($scope.players, function(scopePlayer, index){
+                        if(game.host == scopePlayer.userId){
+                            game.host = $scope.players[index];
+                        }
+                    });
+                });
             });
         };
         $scope.joinGame = function(gameId){
