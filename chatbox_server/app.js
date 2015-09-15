@@ -12,7 +12,7 @@ var express = require('express'),
 var clients = {},
     connectedUsers = [],
     games = [
-        new Game(1,"Game numero 1", 1, null, true, []),
+        new Game(1,"Game numero 1", 1, 2, true, []),
         new Game(2,"Game numero 2", 2, null, true, []),
         new Game(3,"Game numero 3", 3, null, false, []),
         new Game(4,"Game numero 4", 4, null, true, []),
@@ -38,11 +38,15 @@ chatbox.on('connection', function(client){
         } else if(incomingData.messageType === 'privateMessage'){
             findClientByUsername(incomingData.receiver).write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message}));
             clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message}));
-        } else if(incomingData.messageType === "createGame"){
-            var newGame = new Game(currentGameId,incomingData.game.name,client.user.id,null,incomingData.game.rated, []);
-            currentGameId++;
-            games.push(newGame);
-            broadcast({messageType: "gameCreated", game: newGame});
+        } else if(incomingData.messageType === "createGame") {
+            if (clientIsChallenging(client.user.id) || clientAlreadyHosting(client.user.id)) {
+                clients[client.id].write(JSON.stringify({messageType: 'error', error: "you are already hosting or playing, so you cant create a new Game!"}));
+            } else {
+                var newGame = new Game(currentGameId, incomingData.game.name, client.user.id, null, incomingData.game.rated, []);
+                currentGameId++;
+                games.push(newGame);
+                broadcast({messageType: "gameCreated", game: newGame});
+            }
         } else if(incomingData.messageType === "initLoadGames"){
             clients[client.id].write(JSON.stringify({messageType: 'initGamesLoaded', "games" : games }));
         } else if(incomingData.messageType === "close"){
@@ -124,3 +128,23 @@ function findClientByUsername(username){
 server.listen(9998, function(){
     console.log("Listening on port 9998");
 });
+
+function clientIsChallenging(clientUserId){
+    for(var i = 0 ; i < games.length ; i++){
+        if(games[i].challenger == clientUserId){
+            console.log("Client " + clientUserId + " is already challenging in a game.")
+            return true;
+        }
+    }
+    return false;
+}
+
+function clientAlreadyHosting(clientUserId){
+    for(var i = 0 ; i < games.length ; i++){
+        if(games[i].host == clientUserId){
+            console.log("Client " + clientUserId + " is already hosting a game.")
+            return true;
+        }
+    }
+    return false;
+}

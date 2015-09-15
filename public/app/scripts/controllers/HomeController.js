@@ -21,9 +21,14 @@
                     $scope.$broadcast("gameCreated", messageData);
                 } else if (messageData.messageType === "initGamesLoaded"){
                     $scope.$broadcast("initGamesLoaded", messageData);
+                } else if (messageData.messageType === "error"){
+                    $scope.error = messageData.error;
                 }
             };
-        })
+        });
+        $scope.closeError = function(){
+            $scope.error = undefined;
+        }
     };
 
     angular.module("app").controller("HomeController", ["$scope","socketFactory", HomeController])
