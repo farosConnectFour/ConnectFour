@@ -157,13 +157,19 @@ function checkActiveGamesDisconnectedUser(client){
             gamesToDelete.push(game.gameId);
             if(game.challenger){
                 //TODO: catch this message front-end
-                findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'opponentResigned'}));
+                findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'playerResigned'}));
+                game.watchers.forEach(function(watcherId){
+                    findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned'}));
+                });
             }
         } else if(game.challenger === client.user.id){
             console.log("Game to delete because challenger resigns: " + game.gameId);
             gamesToDelete.push(game.gameId);
             //TODO: catch this message front-end
-            findClientByUserID(game.host).write(JSON.stringify({messageType: 'opponentResigned'}))
+            findClientByUserID(game.host).write(JSON.stringify({messageType: 'playerResigned'}));
+            game.watchers.forEach(function(watcherId){
+                findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned'}));
+            });
         } else if(game.watchers.indexOf(client.user.id) > -1){
             console.log("Watcher to delete in game: " + game.gameId);
             game.watchers.splice(game.watchers.indexOf(client.user.id), 1);
