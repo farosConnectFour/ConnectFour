@@ -10,16 +10,6 @@
     <link rel="stylesheet" href="styles/chatbox.css">
     <link rel="stylesheet" href="styles/lobbyGame.css">
     <link rel="stylesheet" href="styles/index.css">
-</head>
-<body>
-    <div class="container" ng-controller="HomeController">
-        <div class="navigationDiv" ng-include="'views/menu.html'"></div>
-        <div class="contentDiv" ng-controller="IndexController">
-            <div class="gameDiv" ng-view></div>
-            <div class="leaderboardDiv" ng-include="'views/leaderboard.html'"></div>
-        </div>
-        <div class="chatDiv" ng-include="'views/chatbox.html'"></div>
-    </div>
 
     <script src="scripts/vendor/socketio/socket.io.js"></script>
     <script src="scripts/vendor/jquery/jquery-2.1.4.min.js"></script>
@@ -53,6 +43,16 @@
     <script src="scripts/controllers/WatchController.js"></script>
 
     <script src="scripts/logout.js"></script>
-
+</head>
+<body>
+    <div class="container" ng-controller="HomeController">
+        <div class="navigationDiv" ng-include="'views/menu.html'"></div>
+        <div class="alert alert-danger" role="alert" ng-show="error">{{error}} <button style="float: right;" ng-click="closeError()">Close</button></div>
+        <div class="contentDiv" ng-controller="IndexController">
+            <div class="gameDiv" ng-view></div>
+            <div class="leaderboardDiv" ng-include="'views/leaderboard.html'"></div>
+        </div>
+        <div class="chatDiv" ng-include="'views/chatbox.html'"></div>
+    </div>
 </body>
 </html>
