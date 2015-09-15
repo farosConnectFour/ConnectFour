@@ -29,6 +29,7 @@
         });
         var createGameListener = $scope.$on("playTime", function(event, messageData){
             $location.path("/game/" + messageData.game);
+            $scope.$apply();
         });
         var updateRoomListener = $scope.$on("updateRoom", function(event, messageData){
             var messageDataGame = messageData.game;
