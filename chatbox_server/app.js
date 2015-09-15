@@ -38,17 +38,19 @@ chatbox.on('connection', function(client){
             games.push(newGame);
             broadcast({messageType: "gameCreated", game: newGame});
         } else if(incomingData.messageType === "initLoadGames"){
-            clients[client.id].write(JSON.stringify({messageType: 'initGamesLoaded', "games" : games }));
+            client.write(JSON.stringify({messageType: 'initGamesLoaded', "games" : games }));
         } else if(incomingData.messageType === "close"){
             storeDisconnectedUser(client.user.username);
+            checkActiveGamesDisconnectedUser(client);
             broadcast({messageType: 'logout', username: client.user.username});
-            clients[client.id].user = null;
+            client.user = null;
         }
     });
 
     // on connection close event
     client.on('close', function() {
         delete clients[client.id];
+        checkActiveGamesDisconnectedUser(client)
         if(client.user){
             storeDisconnectedUser(client.user.username);
             broadcast({messageType: 'logout', username: client.user.username});
@@ -113,6 +115,35 @@ function findClientByUsername(username){
         }
     }
     return undefined;
+}
+
+function checkActiveGamesDisconnectedUser(){
+    console.log(games);
+    var gamesToDelete = [];
+    games.forEach(function(game){
+        if(game.host === client.user.id){
+            gamesToDelete.push(game.gameId);
+            if(game.challenger){
+                //TODO: catch this message front-end
+                findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'opponentResigned'}));
+            }
+        } else if(game.challenger === client.user.id){
+            //TODO: catch this message front-end
+            findClientByUserID(game.host).write(JSON.stringify({messageType: 'opponentResigned'}))
+        } else if(game.watchers.indexOf(client.user.id > -1)){
+            game.watchers.splice(game.watchers.indexOf(client.user.id), 1);
+            //TODO: catch this message front-end
+            broadcast({messageType: 'watcherLeft', game: game.gameId, watcher: client.user})
+        }
+    });
+    gamesToDelete.forEach(function(index){
+        for(var i = 0; i < games.length; i++){
+            if(games[i].gameId === index){
+                broadcast({messageType: 'gameClosed', game: games[i].gameId});
+                games.splice(i, 1);
+            }
+        }
+    });
 }
 
 server.listen(9998, function(){
