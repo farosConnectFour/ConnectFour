@@ -17,58 +17,48 @@
 
         $rootScope.connectToChatBox = function() {
             currentUser = $rootScope.currentUser;
-
-
-            chatboxService.onReady(function () {
-                chatboxService.setUser(currentUser);
-
-                chatboxService.onMessage(function(messageData){
-                    switch(messageData.messageType){
-                        case 'login':
-                            if(currentUser.username !== messageData.user.username) {
-                                $scope.$apply($scope.connectedUsers.push(messageData.user));
-                                $scope.messages = findGeneralTab().messages;
-                                $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
-                                scrollTabDown(findGeneralTab());
-                            }
-                            break;
-                        case 'initialLoad':
-                            $scope.$apply($scope.connectedUsers = messageData.connectedUsers);
-                            break;
-                        case 'logout':
-                            $scope.messages = findGeneralTab().messages;
-                            $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(messageData.username), 1));
-                            $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
-                            scrollTabDown(findGeneralTab());
-                            break;
-                        case 'message':
-                            $scope.messages = findGeneralTab().messages;
-                            $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
-                            scrollTabDown(findGeneralTab());
-                            break;
-                        case 'privateMessage':
-                            var privateMessageTab = undefined;
-                            if (messageData.sender === currentUser.username) {
-                                privateMessageTab = findTabByUsername(messageData.receiver);
-                            } else {
-                                privateMessageTab = findTabByUsername(messageData.sender);
-                                if (!privateMessageTab) {
-                                    var user = findUserByUsername(messageData.sender);
-                                    user.messages = [];
-                                    $scope.$apply($scope.tabs.push(user));
-                                    privateMessageTab = findTabByUsername(messageData.sender);
-                                }
-                            }
-                            $scope.messages = privateMessageTab.messages;
-                            messageData.logging = false;
-                            $scope.$apply($scope.messages.push(messageData));
-                            scrollTabDown(privateMessageTab);
-                    }
-                });
-
-                console.log('Chatbox ready');
+            chatboxService.setUser(currentUser);
+            $scope.$on("login", function(event, messageData){
+                if(currentUser.username !== messageData.user.username) {
+                    $scope.$apply($scope.connectedUsers.push(messageData.user));
+                    $scope.messages = findGeneralTab().messages;
+                    $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
+                    scrollTabDown(findGeneralTab());
+                }
             });
-            chatboxService.connect();
+            $scope.$on("initialLoad", function(event, messageData){
+                $scope.$apply($scope.connectedUsers = messageData.connectedUsers);
+            });
+
+            $scope.$on("logout", function(event, messageData){
+                $scope.messages = findGeneralTab().messages;
+                $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(messageData.username), 1));
+                $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
+                scrollTabDown(findGeneralTab());
+            });
+            $scope.$on("message", function(event, messageData){
+                $scope.messages = findGeneralTab().messages;
+                $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
+                scrollTabDown(findGeneralTab());
+            });
+            $scope.$on("privateMessage", function(event, messageData){
+                var privateMessageTab = undefined;
+                if (messageData.sender === currentUser.username) {
+                    privateMessageTab = findTabByUsername(messageData.receiver);
+                } else {
+                    privateMessageTab = findTabByUsername(messageData.sender);
+                    if (!privateMessageTab) {
+                        var user = findUserByUsername(messageData.sender);
+                        user.messages = [];
+                        $scope.$apply($scope.tabs.push(user));
+                        privateMessageTab = findTabByUsername(messageData.sender);
+                    }
+                }
+                $scope.messages = privateMessageTab.messages;
+                messageData.logging = false;
+                $scope.$apply($scope.messages.push(messageData));
+                scrollTabDown(privateMessageTab);
+            });
         };
 
         $rootScope.disconnectFromChatbox = function(){

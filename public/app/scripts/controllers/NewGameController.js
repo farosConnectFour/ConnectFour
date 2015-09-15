@@ -5,10 +5,8 @@
             rated: true
         };
         $scope.create = function(){
-            LobbyService.createGame($scope.newGame, function(data){
-                console.log(data);
-                $modalInstance.close(data);
-            });
+            LobbyService.createGame($scope.newGame);
+            $modalInstance.close();
         };
         $scope.cancel = function(){
             $modalInstance.dismiss("cancel");
