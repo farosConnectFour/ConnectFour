@@ -11,8 +11,14 @@ var express = require('express'),
 
 var clients = {},
     connectedUsers = [],
-    games = [],
-    currentGameId = 1;
+    games = [
+        new Game(1,"Game numero 1", 1, null, true, []),
+        new Game(2,"Game numero 2", 2, null, true, []),
+        new Game(3,"Game numero 3", 3, null, false, []),
+        new Game(4,"Game numero 4", 4, null, true, []),
+        new Game(5,"Game numero 5", 5, null, false, [])
+    ],
+    currentGameId = 6;
 
 chatbox.installHandlers(server, {prefix:'/chatbox'});
 chatbox.on('connection', function(client){
