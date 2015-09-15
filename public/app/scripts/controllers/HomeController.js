@@ -2,6 +2,7 @@
     "use strict";
     var HomeController = function($scope, socketFactory){
         var socket;
+        $scope.error = "Beste. Momenteel is er een probleem met de layout. Gelieve deze te negeren. Onze excuses voor dit ongemak.";
 
         socketFactory.getSocket(function(s){
             socket = s;
