@@ -24,6 +24,8 @@
                     $scope.$broadcast("initGamesLoaded", messageData);
                 } else if (messageData.messageType === "error"){
                     $scope.error = messageData.error;
+                } else if (messageData.messageType === "gameClosed"){
+                    $scope.$broadcast("gameClosed", messageData);
                 }
             };
         });

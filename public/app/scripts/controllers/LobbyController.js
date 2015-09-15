@@ -27,6 +27,18 @@
             $scope.games.push(game);
             $scope.$apply();
         });
+
+        var closeGameListener = $scope.$on("gameClosed", function(event, messageData){
+            var gameIndex = undefined;
+            angular.forEach($scope.games, function(scopeGame, index){
+               if(scopeGame.gameId === messageData.game){
+                   gameIndex = index;
+               }
+            });
+            $scope.games.splice(gameIndex, 1);
+            $scope.$apply();
+        });
+
         LobbyService.getGames();
 
         $scope.createGame = function(){
