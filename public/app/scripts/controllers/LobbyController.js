@@ -27,6 +27,26 @@
             $scope.games.push(game);
             $scope.$apply();
         });
+        var createGameListener = $scope.$on("playTime", function(event, messageData){
+            $location.path("/game/" + messageData.game);
+        });
+        var updateRoomListener = $scope.$on("updateRoom", function(event, messageData){
+            var messageDataGame = messageData.game;
+            angular.forEach($scope.games, function(game, index){
+                if(game.gameId == messageData.game.gameId){
+                    $scope.games[index] = messageDataGame;
+                    angular.forEach($scope.players, function(player){
+                        if($scope.games[index].host == player.userId){
+                            $scope.games[index].host = player;
+                        }
+                        if($scope.games[index].challenger == player.userId){
+                            $scope.games[index].challenger = player;
+                        }
+                    });
+                }
+            });
+            $scope.$apply();
+        });
 
         var closeGameListener = $scope.$on("gameClosed", function(event, messageData){
             var gameIndex = undefined;
@@ -49,12 +69,6 @@
         };
         $scope.joinGame = function(gameId){
             var challenger = LobbyService.joinGame(gameId);
-            angular.forEach($scope.games, function(game, index){
-                if(game.gameId == gameId){
-                    $scope.games[index].challenger = challenger;
-                }
-            });
-            $location.path("/game");
 
         };
         $scope.watchGame = function(gameId){

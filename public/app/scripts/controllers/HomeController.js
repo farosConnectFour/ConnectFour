@@ -26,6 +26,10 @@
                     $scope.error = messageData.error;
                 } else if (messageData.messageType === "gameClosed"){
                     $scope.$broadcast("gameClosed", messageData);
+                } else if (messageData.messageType === "playTime"){
+                    $scope.$broadcast("playTime", messageData);
+                } else if (messageData.messageType === "updateRoom"){
+                    $scope.$broadcast("updateRoom", messageData);
                 }
             };
         });

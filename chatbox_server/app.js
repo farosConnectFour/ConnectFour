@@ -12,11 +12,7 @@ var express = require('express'),
 var clients = {},
     connectedUsers = [],
     games = [
-        new Game(1,"Game numero 1", 1, null, true, []),
-        new Game(2,"Game numero 2", 2, null, true, []),
-        new Game(3,"Game numero 3", 3, null, false, []),
-        new Game(4,"Game numero 4", 4, null, true, []),
-        new Game(5,"Game numero 5", 5, null, false, [2])
+
     ],
     currentGameId = 6;
 
@@ -63,8 +59,9 @@ chatbox.on('connection', function(client){
                 if(roomToDelete != null){
                     broadcast({messageType: 'gameClosed', game: roomToDelete});
                 }
-                client.write(JSON.stringify({messageType: 'playTime', game: game}));
-                findClientByUserID(game.host).write(JSON.stringify({messageType: 'playTime', game: game}));
+                broadcast({messageType: 'updateRoom', game: game});
+                client.write(JSON.stringify({messageType: 'playTime', game: game.gameId}));
+                findClientByUserID(game.host).write(JSON.stringify({messageType: 'playTime', game: game.gameId}));
             }
         }
     });
@@ -210,14 +207,8 @@ function clientAlreadyHosting(clientUserId){
     }
     return false;
 };
-function findGameByGameId(gameId){
-    for(var i = 0 ; i < games.length ; i++){
-        if(games[i].gameId === gameId){
-            return games[i];
-        }
-    }
-};
-function closeEventualHostedGame(clientUserId){
+
+function closeEventualHostedGames(clientUserId){
     for(var i = games.length -1 ; i >= 0  ; i--){
         if(games[i].host === clientUserId){
             var gameId = games[i].gameId;
