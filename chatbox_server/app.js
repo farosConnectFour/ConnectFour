@@ -29,7 +29,7 @@ chatbox.on('connection', function(client){
         var incomingData = JSON.parse(data);
         if(incomingData.messageType === 'login'){
             client.user = incomingData.user;
-            var connectedUser = new ConnectedUser(client.id, client.user.username, client.user.userId);
+            var connectedUser = new ConnectedUser(client.id, client.user.username, client.user.id);
             storeConnectedUser(connectedUser);
             sendConnectedUsersToClient(client, connectedUsers);
             broadcast({messageType: 'login', user: connectedUser});
@@ -47,7 +47,6 @@ chatbox.on('connection', function(client){
             clients[client.id].write(JSON.stringify({messageType: 'initGamesLoaded', "games" : games }));
         } else if(incomingData.messageType === "close"){
             storeDisconnectedUser(client.user.username);
-            console.log(connectedUsers);
             broadcast({messageType: 'logout', username: client.user.username});
             clients[client.id].user = null;
         }
@@ -55,9 +54,11 @@ chatbox.on('connection', function(client){
 
     // on connection close event
     client.on('close', function() {
-        storeDisconnectedUser(client.user.username);
         delete clients[client.id];
-        broadcast({messageType: 'logout', username: client.user.username});
+        if(client.user){
+            storeDisconnectedUser(client.user.username);
+            broadcast({messageType: 'logout', username: client.user.username});
+        }
     });
 
 });

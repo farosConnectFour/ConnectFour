@@ -9,6 +9,11 @@
     var chatboxController = function($rootScope, $scope, chatboxService){
 
         var currentUser;
+        var loginListener,
+            initialLoadListener,
+            logoutListener,
+            messageListener,
+            privateMessageListener;
 
         $scope.textInput = '';
         $scope.connectedUsers = [];
@@ -18,7 +23,7 @@
         $rootScope.connectToChatBox = function() {
             currentUser = $rootScope.currentUser;
             chatboxService.setUser(currentUser);
-            $scope.$on("login", function(event, messageData){
+            loginListener = $scope.$on("login", function(event, messageData){
                 if(currentUser.username !== messageData.user.username) {
                     $scope.$apply($scope.connectedUsers.push(messageData.user));
                     $scope.messages = findGeneralTab().messages;
@@ -26,22 +31,23 @@
                     scrollTabDown(findGeneralTab());
                 }
             });
-            $scope.$on("initialLoad", function(event, messageData){
+            initialLoadListener = $scope.$on("initialLoad", function(event, messageData){
                 $scope.$apply($scope.connectedUsers = messageData.connectedUsers);
             });
 
-            $scope.$on("logout", function(event, messageData){
+            logoutListener = $scope.$on("logout", function(event, messageData){
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(messageData.username), 1));
                 $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
                 scrollTabDown(findGeneralTab());
             });
-            $scope.$on("message", function(event, messageData){
+            messageListener = $scope.$on("message", function(event, messageData){
+                console.log(messageData);
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
                 scrollTabDown(findGeneralTab());
             });
-            $scope.$on("privateMessage", function(event, messageData){
+            privateMessageListener = $scope.$on("privateMessage", function(event, messageData){
                 var privateMessageTab = undefined;
                 if (messageData.sender === currentUser.username) {
                     privateMessageTab = findTabByUsername(messageData.receiver);
@@ -62,6 +68,7 @@
         };
 
         $rootScope.disconnectFromChatbox = function(){
+            deregisterListeners();
             chatboxService.disconnect(function(){
                 $scope.textInput = '';
                 $scope.connectedUsers = [];
@@ -165,6 +172,14 @@
                 }
             }
             return undefined;
+        }
+
+        function deregisterListeners(){
+            loginListener();
+            initialLoadListener();
+            logoutListener();
+            messageListener();
+            privateMessageListener();
         }
 
     };
