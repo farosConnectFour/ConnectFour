@@ -15,6 +15,11 @@
                 templateUrl: "views/modals/newGame.html",
                 controller: "NewGameController"
             });
+            $scope.$on("gameCreated", function(event, args){
+                console.log(args);
+            });
+
+
             modelInstance.result.then(function(data){
                 $scope.games.push(data.game);
             });

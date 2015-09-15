@@ -7,57 +7,28 @@
     "use strict";
 
     var socket;
-    var onReadyCallback;
     var currentUser;
-
-    var onReady = function(callback){
-        if(socket) {
-            callback();
-        } else {
-            onReadyCallback = callback;
-        }
-    };
 
     var setUser = function(user){
         currentUser = user;
         socket.send(JSON.stringify({messageType: 'login', user: currentUser}));
     };
 
-    var onMessage = function(callback){
-        socket.onmessage = function(data){
-            var messageData = JSON.parse(data.data);
-            if(messageData.messageType === "login" || messageData.messageType === "privateMessage" || messageData.messageType === "initialLoad" || messageData.messageType === "message" || messageData.messageType === "logout"){
-                callback(messageData);
-            }
-        }
-    };
-
     var sendMessage = function(message){
         socket.send(JSON.stringify(message));
     };
 
-
-
     var chatboxService = function(socketFactory){
-
-        var connect = function(){
-            socketFactory.getSocket(function (s){
-                socket = s;
-                onReadyCallback();
-            });
-        };
+        socketFactory.getSocket(function (s){
+            socket = s;
+        });
 
         var disconnect = function(callback){
-            socket.close();
-            socketFactory.destroySocket();
+            socket.send(JSON.stringify({"messageType" : "close"}));
             callback();
-
         };
 
-        this.connect = connect;
-        this.onReady = onReady;
         this.setUser = setUser;
-        this.onMessage = onMessage;
         this.sendMessage = sendMessage;
         this.disconnect = disconnect;
     };

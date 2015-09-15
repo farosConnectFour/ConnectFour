@@ -39,14 +39,17 @@ chatbox.on('connection', function(client){
             broadcast({messageType: "gameCreated", game: newGame});
         } else if(incomingData.messageType === "initLoadGames"){
             clients[client.id].write(JSON.stringify({messageType: 'initGamesLoaded', "games" : games }));
+        } else if(incomingData.messageType === "close"){
+            storeDisconnectedUser(client.user.username);
+            console.log(connectedUsers);
+            broadcast({messageType: 'logout', username: client.user.username});
+            clients[client.id].user = null;
         }
     });
 
     // on connection close event
     client.on('close', function() {
-        storeDisconnectedUser(client.user.username);
-        delete clients[client.id];
-        broadcast({messageType: 'logout', username: client.user.username});
+
     });
 
 });
@@ -70,7 +73,10 @@ function storeConnectedUser(user){
 }
 
 function storeDisconnectedUser(username){
-    connectedUsers.splice(getIndexConnectedUserByUsername(username), 1);
+    var index = getIndexConnectedUserByUsername(username);
+    if(index > -1){
+        connectedUsers.splice(getIndexConnectedUserByUsername(username), 1);
+    }
 }
 
 function getIndexConnectedUserByUsername(username){

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" ng-controller="HomeController">
         <div class="navigationDiv" ng-include="'views/menu.html'"></div>
         <div class="contentDiv" ng-controller="IndexController">
             <div class="gameDiv" ng-view></div>
@@ -41,7 +41,7 @@
     <script src="scripts/services/UserService.js"></script>
     <script src="scripts/services/PlayedGamesService.js"></script>
     <script src="scripts/services/ChatboxService.js"></script>
-
+    <script src="scripts/controllers/HomeController.js"></script>
     <script src="scripts/controllers/NavigationController.js"></script>
     <script src="scripts/controllers/IndexController.js"></script>
     <script src="scripts/controllers/ChatboxController.js"></script>
