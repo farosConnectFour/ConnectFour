@@ -12,11 +12,11 @@ var express = require('express'),
 var clients = {},
     connectedUsers = [],
     games = [
-        new Game(1,"Game numero 1", 1, null, true, []),
+        new Game(1,"Game numero 1", 1, 2, true, []),
         new Game(2,"Game numero 2", 2, null, true, []),
         new Game(3,"Game numero 3", 3, null, false, []),
         new Game(4,"Game numero 4", 4, null, true, []),
-        new Game(5,"Game numero 5", 5, null, false, [])
+        new Game(5,"Game numero 5", 5, null, false, [2])
     ],
     currentGameId = 6;
 
@@ -116,27 +116,40 @@ function Game(gameId, name, host, challenger, rated, watchers){
 
 function findClientByUsername(username){
     for (var client in clients){
-        if(clients[client].user.username === username){
+        if(clients[client].user && clients[client].user.username === username){
             return clients[client];
         }
     }
     return undefined;
 }
 
-function checkActiveGamesDisconnectedUser(){
+function findClientByUserID(id){
+    for (var client in clients){
+        if(clients[client].user && clients[client].user.id === id){
+            return clients[client];
+        }
+    }
+    return undefined;
+}
+
+function checkActiveGamesDisconnectedUser(client){
     console.log(games);
     var gamesToDelete = [];
     games.forEach(function(game){
         if(game.host === client.user.id){
+            console.log("Game to delete because host resigns: " + game.gameId);
             gamesToDelete.push(game.gameId);
             if(game.challenger){
                 //TODO: catch this message front-end
                 findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'opponentResigned'}));
             }
         } else if(game.challenger === client.user.id){
+            console.log("Game to delete because challenger resigns: " + game.gameId);
+            gamesToDelete.push(game.gameId);
             //TODO: catch this message front-end
             findClientByUserID(game.host).write(JSON.stringify({messageType: 'opponentResigned'}))
-        } else if(game.watchers.indexOf(client.user.id > -1)){
+        } else if(game.watchers.indexOf(client.user.id) > -1){
+            console.log("Watcher to delete in game: " + game.gameId);
             game.watchers.splice(game.watchers.indexOf(client.user.id), 1);
             //TODO: catch this message front-end
             broadcast({messageType: 'watcherLeft', game: game.gameId, watcher: client.user})
