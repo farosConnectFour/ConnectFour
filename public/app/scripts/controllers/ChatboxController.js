@@ -42,7 +42,6 @@
                 scrollTabDown(findGeneralTab());
             });
             messageListener = $scope.$on("message", function(event, messageData){
-                console.log(messageData);
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
                 scrollTabDown(findGeneralTab());

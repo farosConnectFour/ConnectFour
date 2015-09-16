@@ -13,10 +13,10 @@ var clients = {},
     connectedUsers = [],
     games = [
         new Game(1,"Game numero 1", 1, 2, true, []),
-        new Game(2,"Game numero 2", 2, null, true, []),
-        new Game(3,"Game numero 3", 3, null, false, []),
-        new Game(4,"Game numero 4", 4, null, true, []),
-        new Game(5,"Game numero 5", 5, null, false, [2])
+        new Game(2,"Game numero 2", null, null, true, []),
+        new Game(3,"Game numero 3", null, null, false, []),
+        new Game(4,"Game numero 4", null, null, true, []),
+        new Game(5,"Game numero 5", null, null, false, [2])
     ],
     currentGameId = 6;
 
@@ -144,19 +144,17 @@ function checkActiveGamesDisconnectedUser(client){
             console.log("Game to delete because host resigns: " + game.gameId);
             gamesToDelete.push(game.gameId);
             if(game.challenger){
-                //TODO: catch this message front-end
-                findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'playerResigned'}));
+                findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
                 game.watchers.forEach(function(watcherId){
-                    findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned'}));
+                    findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
                 });
             }
         } else if(game.challenger === client.user.id){
             console.log("Game to delete because challenger resigns: " + game.gameId);
             gamesToDelete.push(game.gameId);
-            //TODO: catch this message front-end
-            findClientByUserID(game.host).write(JSON.stringify({messageType: 'playerResigned'}));
+            findClientByUserID(game.host).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
             game.watchers.forEach(function(watcherId){
-                findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned'}));
+                findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
             });
         } else if(game.watchers.indexOf(client.user.id) > -1){
             console.log("Watcher to delete in game: " + game.gameId);

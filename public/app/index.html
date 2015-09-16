@@ -48,6 +48,7 @@
     <div class="container" ng-controller="HomeController">
         <div class="navigationDiv" ng-include="'views/menu.html'"></div>
         <div class="alert alert-danger" role="alert" ng-show="error">{{error}} <button style="float: right;" ng-click="closeError()">Close</button></div>
+        <div class="alert alert-info" role="alert" ng-show="info">{{info}} <button style="float: right;" ng-click="closeInfo()">Close</button></div>
         <div class="contentDiv" ng-controller="IndexController">
             <div class="gameDiv" ng-view></div>
             <div class="leaderboardDiv" ng-include="'views/leaderboard.html'"></div>

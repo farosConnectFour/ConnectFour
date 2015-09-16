@@ -3,8 +3,6 @@
         $scope.games = [];
         $scope.$on("initGamesLoaded", function(event, messageData){
             $scope.games = messageData.games;
-            console.log("Games : " + $scope.games.length);
-            console.log("players : " + $scope.players.length);
             angular.forEach($scope.games, function(game){
                 angular.forEach($scope.players, function(scopePlayer, index){
                     if(game.host == scopePlayer.userId){
@@ -37,6 +35,20 @@
             });
             $scope.games.splice(gameIndex, 1);
             $scope.$apply();
+        });
+
+        var playerResignedListener = $scope.$on("playerResigned", function(event, messageData){
+            $location.url('/lobby');
+        });
+
+        var watcherLeftListener = $scope.$on('watcherLeft', function(event, messageData){
+            for(var i = 0; i < $scope.games.length; i++){
+                if($scope.games[i].gameId == messageData.game){
+                    $scope.games[i].watchers.splice($scope.games[i].watchers.indexOf(messageData.watcher.id, 1));
+                    break;
+                }
+            }
+            $scope.apply();
         });
 
         LobbyService.getGames();

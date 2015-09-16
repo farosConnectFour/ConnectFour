@@ -3,6 +3,7 @@
     var HomeController = function($scope, socketFactory){
         var socket;
         $scope.error = "Beste. Momenteel is er een probleem met de layout. Gelieve deze te negeren. Onze excuses voor dit ongemak.";
+        $scope.info = undefined;
 
         socketFactory.getSocket(function(s){
             socket = s;
@@ -26,12 +27,20 @@
                     $scope.error = messageData.error;
                 } else if (messageData.messageType === "gameClosed"){
                     $scope.$broadcast("gameClosed", messageData);
+                } else if (messageData.messageType === "playerResigned"){
+                    $scope.info = messageData.player.username + " resigned this game";
+                    $scope.$broadcast("playerResigned", messageData);
+                } else if (messageData.messageType === "watcherLeft"){
+                    $scope.$broadcast("watcherLeft", messageData);
                 }
             };
         });
         $scope.closeError = function(){
             $scope.error = undefined;
-        }
+        };
+        $scope.closeInfo = function(){
+            $scope.info = undefined;
+        };
     };
 
     angular.module("app").controller("HomeController", ["$scope","socketFactory", HomeController])
