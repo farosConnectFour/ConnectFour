@@ -6,7 +6,7 @@ var express = require('express'),
     app = express(),
     http = require('http'),
     sockjs = require('sockjs'),
-    chatbox = sockjs.createServer({sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'}),
+    contentSocket = sockjs.createServer({sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'}),
     server = http.createServer();
 
 var clients = {},
@@ -16,8 +16,8 @@ var clients = {},
     ],
     currentGameId = 6;
 
-chatbox.installHandlers(server, {prefix:'/chatbox'});
-chatbox.on('connection', function(client){
+contentSocket.installHandlers(server, {prefix:'/contentSocket'});
+contentSocket.on('connection', function(client){
     //adds this client to the clients list
     clients[client.id] = client;
 
@@ -146,11 +146,9 @@ function findClientByUserID(id){
 }
 
 function checkActiveGamesDisconnectedUser(client){
-    console.log(games);
     var gamesToDelete = [];
     games.forEach(function(game){
         if(game.host === client.user.id){
-            console.log("Game to delete because host resigns: " + game.gameId);
             gamesToDelete.push(game.gameId);
             if(game.challenger){
                 findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
@@ -159,7 +157,6 @@ function checkActiveGamesDisconnectedUser(client){
                 });
             }
         } else if(game.challenger === client.user.id){
-            console.log("Game to delete because challenger resigns: " + game.gameId);
             gamesToDelete.push(game.gameId);
             findClientByUserID(game.host).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
             game.watchers.forEach(function(watcherId){
