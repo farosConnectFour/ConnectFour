@@ -12,7 +12,7 @@
         if (socket) {
             callback(socket);
         } else {
-            socket = new SockJS('http://10.1.15.60:9998/chatbox');
+            socket = new SockJS('http://10.1.15.94:9998/contentSocket');
             socket.onopen = function(){
                 callback(socket);
                 console.log('connected');

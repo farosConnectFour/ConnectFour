@@ -1,5 +1,5 @@
 (function(){
-    var gameController = function($scope) {
+    var gameController = function($scope, $location) {
         var board = []
         for (var row = 0; row < 6; row++) {
             var cols = [];
@@ -11,7 +11,12 @@
         $scope.game = {
             board:board
         }
+
+        var playerResignedListener = $scope.$on("playerResigned", function(event, messageData){
+            $location.path('/lobby');
+            $scope.$apply();
+        });
     };
 
-    angular.module("app").controller("GameController", ["$scope", gameController])
+    angular.module("app").controller("GameController", ["$scope", "$location", gameController])
 })();

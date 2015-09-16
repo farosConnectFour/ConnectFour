@@ -5,7 +5,7 @@
             $rootScope.currentUser = response.data;
             $rootScope.connectToChatBox();
             $scope.loginMessage = '';
-            $location.url('/lobby');
+            $location.path('/lobby');
         };
 
         var onLoginError = function(error){
