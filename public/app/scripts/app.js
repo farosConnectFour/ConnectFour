@@ -10,7 +10,7 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
                templateUrl: "views/lobby.html",
                controller: "LobbyController"
            })
-           .when("/game", {
+           .when("/game/:gameId", {
                templateUrl: "views/game.html",
                controller: "GameController"
            })

@@ -12,11 +12,7 @@ var express = require('express'),
 var clients = {},
     connectedUsers = [],
     games = [
-        new Game(1,"Game numero 1", 1, 2, true, []),
-        new Game(2,"Game numero 2", null, null, true, []),
-        new Game(3,"Game numero 3", null, null, false, []),
-        new Game(4,"Game numero 4", null, null, true, []),
-        new Game(5,"Game numero 5", null, null, false, [2])
+
     ],
     currentGameId = 6;
 
@@ -54,6 +50,19 @@ chatbox.on('connection', function(client){
             checkActiveGamesDisconnectedUser(client);
             broadcast({messageType: 'logout', username: client.user.username});
             client.user = null;
+        } else if(incomingData.messageType === "joinGame"){
+            if (clientIsChallenging(client.user.id)) {
+                clients[client.id].write(JSON.stringify({messageType: 'error', error: "you are already playing, So you cannot play in another"}));
+            } else {
+                var game = setGameChallenger(incomingData.gameId, client.user.id);
+                var roomToDelete = closeEventualHostedGames(client.user.id);
+                if(roomToDelete != null){
+                    broadcast({messageType: 'gameClosed', game: roomToDelete});
+                }
+                broadcast({messageType: 'updateRoom', game: game});
+                client.write(JSON.stringify({messageType: 'playTime', game: game.gameId}));
+                findClientByUserID(game.host).write(JSON.stringify({messageType: 'playTime', game: game.gameId}));
+            }
         }
     });
 
@@ -185,7 +194,7 @@ function clientIsChallenging(clientUserId){
         }
     }
     return false;
-}
+};
 
 function clientAlreadyHosting(clientUserId){
     for(var i = 0 ; i < games.length ; i++){
@@ -195,4 +204,24 @@ function clientAlreadyHosting(clientUserId){
         }
     }
     return false;
+};
+
+function closeEventualHostedGames(clientUserId){
+    for(var i = games.length -1 ; i >= 0  ; i--){
+        if(games[i].host === clientUserId){
+            var gameId = games[i].gameId;
+            games.splice(i, 1);
+            return gameId;
+        }
+    }
+    return null;
+};
+
+function setGameChallenger(gameId, clientUserId){
+    for(var i = 0 ; i < games.length ; i++){
+        if(games[i].gameId === gameId){
+            games[i].challenger = clientUserId;
+            return games[i];
+        }
+    }
 }

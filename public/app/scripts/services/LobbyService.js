@@ -12,10 +12,7 @@
                 socket.send(JSON.stringify({"messageType" : "createGame", "game" : newGame}));
             },
             joinGame: function(gameId){
-                return {
-                    name: "Challenger",
-                    points: 1100
-                }
+                socket.send(JSON.stringify({"messageType" : "joinGame", "gameId" : gameId}));
             },
             watchGame: function(gameId){
                 //Vraag server als Current User game mag bekijken. Zoja return watcher
