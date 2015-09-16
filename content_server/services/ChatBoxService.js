@@ -15,9 +15,11 @@ ChatBoxService.prototype.connectUser = function(clientConnected, clients){
 };
 
 ChatBoxService.prototype.storeDisconnectedUser = function(disconnectedUser){
-    var index = this.connectedUsers.indexOf(disconnectedUser);
-    if(index > -1){
-        this.connectedUsers.splice(index, 1);
+    for(var i = 0; i < this.connectedUsers.length; i++){
+        if(this.connectedUsers[i].userId === disconnectedUser.id){
+            this.connectedUsers.splice(i, 1);
+            break;
+        }
     }
 };
 
