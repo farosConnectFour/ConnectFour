@@ -4,9 +4,9 @@ var Game = require("../models/Game.js");
 function GameService(){
     this.games = [];
     this.currentGameId = 0;
-    this.clientIsChallenging = function(clientUserId){
+    this.clientIsPlaying = function(clientUserId){
         for(var i = 0 ; i < this.games.length ; i++){
-            if(this.games[i].challenger == clientUserId){
+            if(this.games[i].challenger == clientUserId || this.games[i].host == clientUserId && this.games[i].challenger != null){
                 return true;
             }
         }
@@ -56,7 +56,7 @@ function GameService(){
 };
 
 GameService.prototype.createGame = function(client, clients, game){
-    if (this.clientIsChallenging(client.user.id) || this.clientAlreadyHosting(client.user.id)) {
+    if (this.clientIsPlaying(client.user.id) || this.clientAlreadyHosting(client.user.id)) {
         var message = {messageType: 'error', error: "you are already hosting or playing, so you cant create a new Game!"};
         WebSocketService.sendToSingleClient(message, client);
     } else {
@@ -109,13 +109,14 @@ GameService.prototype.removeUserFromGames = function(client, clients){
 };
 
 GameService.prototype.joinGame = function(client, clients, gameId){
-    if (this.clientIsChallenging(client.user.id)) {
+    if (this.clientIsPlaying(client.user.id)) {
         var messageErrorChallenging = {messageType: 'error', error: "you are already playing, So you cannot play in another"};
         WebSocketService.sendToSingleClient(messageErrorChallenging, client);
     } else if(this.hostTriesToJoinOwnGame(client, gameId)){
         var messageErrorHost = {messageType: 'error', error: "You obviously can't join your own game... !!!"};
         WebSocketService.sendToSingleClient(messageErrorHost, client);
-    } else {
+    }
+    else {
         var game = this.setGameChallenger(gameId, client.user.id);
         var messageUpdateRoom = {messageType: 'updateRoom', game: game};
         WebSocketService.broadcast(messageUpdateRoom, clients);
