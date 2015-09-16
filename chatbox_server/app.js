@@ -168,7 +168,6 @@ function checkActiveGamesDisconnectedUser(client){
         } else if(game.watchers.indexOf(client.user.id) > -1){
             console.log("Watcher to delete in game: " + game.gameId);
             game.watchers.splice(game.watchers.indexOf(client.user.id), 1);
-            //TODO: catch this message front-end
             broadcast({messageType: 'watcherLeft', game: game.gameId, watcher: client.user})
         }
     });

@@ -25,7 +25,7 @@
             $scope.games.push(game);
             $scope.$apply();
         });
-        var createGameListener = $scope.$on("playTime", function(event, messageData){
+        var playtimeListener = $scope.$on("playTime", function(event, messageData){
             $location.path("/game/" + messageData.game);
             $scope.$apply();
         });
@@ -58,10 +58,6 @@
             $scope.$apply();
         });
 
-        var playerResignedListener = $scope.$on("playerResigned", function(event, messageData){
-            $location.url('/lobby');
-        });
-
         var watcherLeftListener = $scope.$on('watcherLeft', function(event, messageData){
             for(var i = 0; i < $scope.games.length; i++){
                 if($scope.games[i].gameId == messageData.game){
@@ -69,7 +65,7 @@
                     break;
                 }
             }
-            $scope.apply();
+            $scope.$apply();
         });
 
         LobbyService.getGames();
