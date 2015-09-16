@@ -27,15 +27,15 @@
                     $scope.error = messageData.error;
                 } else if (messageData.messageType === "gameClosed"){
                     $scope.$broadcast("gameClosed", messageData);
+                } else if (messageData.messageType === "playTime"){
+                    $scope.$broadcast("playTime", messageData);
+                } else if (messageData.messageType === "updateRoom"){
+                    $scope.$broadcast("updateRoom", messageData);
                 } else if (messageData.messageType === "playerResigned"){
                     $scope.info = messageData.player.username + " resigned this game";
                     $scope.$broadcast("playerResigned", messageData);
                 } else if (messageData.messageType === "watcherLeft"){
                     $scope.$broadcast("watcherLeft", messageData);
-                } else if (messageData.messageType === "playTime"){
-                    $scope.$broadcast("playTime", messageData);
-                } else if (messageData.messageType === "updateRoom"){
-                    $scope.$broadcast("updateRoom", messageData);
                 }
             };
         });
