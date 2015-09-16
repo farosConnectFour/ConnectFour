@@ -53,6 +53,8 @@ chatbox.on('connection', function(client){
         } else if(incomingData.messageType === "joinGame"){
             if (clientIsChallenging(client.user.id)) {
                 clients[client.id].write(JSON.stringify({messageType: 'error', error: "you are already playing, So you cannot play in another"}));
+            } else if(hostTriesToJoinOwnGame(client, incomingData)){
+                clients[client.id].write(JSON.stringify({messageType: 'error', error: "You obviously can't join your own game... !!!"}));
             } else {
                 var game = setGameChallenger(incomingData.gameId, client.user.id);
                 var roomToDelete = closeEventualHostedGames(client.user.id);
@@ -224,4 +226,15 @@ function setGameChallenger(gameId, clientUserId){
             return games[i];
         }
     }
+};
+
+function hostTriesToJoinOwnGame(client, incomingData){
+    var game;
+    var gameId = incomingData.gameId;
+    for(var i = 0 ; i < games.length ; i++){
+        if(games[i].gameId === gameId){
+            game = games[i];
+        }
+    }
+    return game.host == client.user.id;
 }

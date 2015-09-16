@@ -25,6 +25,7 @@
                     $scope.$broadcast("initGamesLoaded", messageData);
                 } else if (messageData.messageType === "error"){
                     $scope.error = messageData.error;
+                    $scope.$apply();
                 } else if (messageData.messageType === "gameClosed"){
                     $scope.$broadcast("gameClosed", messageData);
                 } else if (messageData.messageType === "playTime"){
