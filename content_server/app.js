@@ -1,6 +1,10 @@
 /**
  * Created by peeteli on 4/09/2015.
  */
+var Game = require("./models/Game.js");
+var ConnectedUser = require("./models/ConnectedUser.js");
+var ChatBoxService = new (require("./services/ChatBoxService.js"))();
+var GameService = new (require("./services/GameService.js"))();
 
 var express = require('express'),
     app = express(),
@@ -9,12 +13,7 @@ var express = require('express'),
     contentSocket = sockjs.createServer({sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'}),
     server = http.createServer();
 
-var clients = {},
-    connectedUsers = [],
-    games = [
-
-    ],
-    currentGameId = 6;
+var clients = {};
 
 contentSocket.installHandlers(server, {prefix:'/contentSocket'});
 contentSocket.on('connection', function(client){
@@ -25,109 +24,34 @@ contentSocket.on('connection', function(client){
         var incomingData = JSON.parse(data);
         if(incomingData.messageType === 'login'){
             client.user = incomingData.user;
-            var connectedUser = new ConnectedUser(client.id, client.user.username, client.user.id);
-            storeConnectedUser(connectedUser);
-            sendConnectedUsersToClient(client, connectedUsers);
-            broadcast({messageType: 'login', user: connectedUser});
+            ChatBoxService.connectUser(client, clients);
         } else if(incomingData.messageType === 'message'){
-            broadcast({messageType: 'message', username: client.user.username, message: incomingData.message});
+            ChatBoxService.broadcastMessage(client, clients, incomingData.message);
         } else if(incomingData.messageType === 'privateMessage'){
-            findClientByUsername(incomingData.receiver).write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message}));
-            clients[client.id].write(JSON.stringify({messageType: 'privateMessage', sender: incomingData.sender, receiver: incomingData.receiver, message: incomingData.message}));
+            var receiver = findClientByUsername(incomingData.receiver);
+            ChatBoxService.sendPrivateMessage(receiver, client, incomingData.message);
         } else if(incomingData.messageType === "createGame") {
-            if (clientIsChallenging(client.user.id) || clientAlreadyHosting(client.user.id)) {
-                clients[client.id].write(JSON.stringify({messageType: 'error', error: "you are already hosting or playing, so you cant create a new Game!"}));
-            } else {
-                var newGame = new Game(currentGameId, incomingData.game.name, client.user.id, null, incomingData.game.rated, []);
-                currentGameId++;
-                games.push(newGame);
-                broadcast({messageType: "gameCreated", game: newGame});
-            }
+            GameService.createGame(client, clients, incomingData.game);
         } else if(incomingData.messageType === "initLoadGames"){
-            client.write(JSON.stringify({messageType: 'initGamesLoaded', "games" : games }));
-        } else if(incomingData.messageType === "close"){
-            storeDisconnectedUser(client.user.username);
-            checkActiveGamesDisconnectedUser(client);
-            broadcast({messageType: 'logout', username: client.user.username});
+            GameService.loadGames(client);
+        } else if(incomingData.messageType === "logout"){
+            ChatBoxService.logUserOut(client, clients);
+            GameService.removeUserFromGames(client, clients);
             client.user = null;
         } else if(incomingData.messageType === "joinGame"){
-            if (clientIsChallenging(client.user.id)) {
-                clients[client.id].write(JSON.stringify({messageType: 'error', error: "you are already playing, So you cannot play in another"}));
-            } else if(hostTriesToJoinOwnGame(client, incomingData)){
-                clients[client.id].write(JSON.stringify({messageType: 'error', error: "You obviously can't join your own game... !!!"}));
-            } else {
-                var game = setGameChallenger(incomingData.gameId, client.user.id);
-                var roomToDelete = closeEventualHostedGames(client.user.id);
-                if(roomToDelete != null){
-                    broadcast({messageType: 'gameClosed', game: roomToDelete});
-                }
-                broadcast({messageType: 'updateRoom', game: game});
-                client.write(JSON.stringify({messageType: 'playTime', game: game.gameId}));
-                findClientByUserID(game.host).write(JSON.stringify({messageType: 'playTime', game: game.gameId}));
-            }
+            GameService.joinGame(client, clients, incomingData.gameId);
         }
     });
 
     // on connection close event
     client.on('close', function() {
         delete clients[client.id];
-        checkActiveGamesDisconnectedUser(client)
+        GameService.removeUserFromGames(client, clients);
         if(client.user){
-            storeDisconnectedUser(client.user.username);
-            broadcast({messageType: 'logout', username: client.user.username});
+            ChatBoxService.logUserOut(client, clients);
         }
     });
-
 });
-
-// Broadcast to all clients
-function broadcast(message){
-    // iterate through each client in clients object
-    for (var client in clients){
-        // send the message to that client
-        clients[client].write(JSON.stringify(message));
-    }
-}
-
-function sendConnectedUsersToClient(client, users){
-    var message = {messageType: 'initialLoad', connectedUsers: users};
-    client.write(JSON.stringify(message));
-}
-
-function storeConnectedUser(user){
-    connectedUsers.push(user);
-}
-
-function storeDisconnectedUser(username){
-    var index = getIndexConnectedUserByUsername(username);
-    if(index > -1){
-        connectedUsers.splice(getIndexConnectedUserByUsername(username), 1);
-    }
-}
-
-function getIndexConnectedUserByUsername(username){
-    for(var i = 0; i < connectedUsers.length; i++){
-        if(connectedUsers[i].username === username){
-            return i;
-        }
-    }
-    return undefined;
-}
-
-function ConnectedUser(clientId, username, userId){
-    this.clientId = clientId;
-    this.username = username;
-    this.userId = userId;
-}
-
-function Game(gameId, name, host, challenger, rated, watchers){
-    this.gameId = gameId;
-    this.name = name;
-    this.host = host;
-    this.rated = rated;
-    this.challenger = challenger;
-    this.watchers = watchers;
-}
 
 function findClientByUsername(username){
     for (var client in clients){
@@ -138,99 +62,7 @@ function findClientByUsername(username){
     return undefined;
 }
 
-function findClientByUserID(id){
-    for (var client in clients){
-        if(clients[client].user && clients[client].user.id === id){
-            return clients[client];
-        }
-    }
-    return undefined;
-}
-
-function checkActiveGamesDisconnectedUser(client){
-    var gamesToDelete = [];
-    games.forEach(function(game){
-        if(game.host === client.user.id){
-            gamesToDelete.push(game.gameId);
-            if(game.challenger){
-                findClientByUserID(game.challenger).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
-                game.watchers.forEach(function(watcherId){
-                    findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
-                });
-            }
-        } else if(game.challenger === client.user.id){
-            gamesToDelete.push(game.gameId);
-            findClientByUserID(game.host).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
-            game.watchers.forEach(function(watcherId){
-                findClientByUserID(watcherId).write(JSON.stringify({messageType: 'playerResigned', player: client.user}));
-            });
-        } else if(game.watchers.indexOf(client.user.id) > -1){
-            console.log("Watcher to delete in game: " + game.gameId);
-            game.watchers.splice(game.watchers.indexOf(client.user.id), 1);
-            broadcast({messageType: 'watcherLeft', game: game.gameId, watcher: client.user})
-        }
-    });
-    gamesToDelete.forEach(function(index){
-        for(var i = 0; i < games.length; i++){
-            if(games[i].gameId === index){
-                broadcast({messageType: 'gameClosed', game: games[i].gameId});
-                games.splice(i, 1);
-            }
-        }
-    });
-}
 
 server.listen(9998, function(){
     console.log("Listening on port 9998");
 });
-
-function clientIsChallenging(clientUserId){
-    for(var i = 0 ; i < games.length ; i++){
-        if(games[i].challenger == clientUserId){
-            console.log("Client " + clientUserId + " is already challenging in a game.")
-            return true;
-        }
-    }
-    return false;
-};
-
-function clientAlreadyHosting(clientUserId){
-    for(var i = 0 ; i < games.length ; i++){
-        if(games[i].host == clientUserId){
-            console.log("Client " + clientUserId + " is already hosting a game.")
-            return true;
-        }
-    }
-    return false;
-};
-
-function closeEventualHostedGames(clientUserId){
-    for(var i = games.length -1 ; i >= 0  ; i--){
-        if(games[i].host === clientUserId){
-            var gameId = games[i].gameId;
-            games.splice(i, 1);
-            return gameId;
-        }
-    }
-    return null;
-};
-
-function setGameChallenger(gameId, clientUserId){
-    for(var i = 0 ; i < games.length ; i++){
-        if(games[i].gameId === gameId){
-            games[i].challenger = clientUserId;
-            return games[i];
-        }
-    }
-};
-
-function hostTriesToJoinOwnGame(client, incomingData){
-    var game;
-    var gameId = incomingData.gameId;
-    for(var i = 0 ; i < games.length ; i++){
-        if(games[i].gameId === gameId){
-            game = games[i];
-        }
-    }
-    return game.host == client.user.id;
-}

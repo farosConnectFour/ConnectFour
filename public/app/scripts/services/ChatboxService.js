@@ -24,7 +24,7 @@
         });
 
         var disconnect = function(callback){
-            socket.send(JSON.stringify({"messageType" : "close"}));
+            socket.send(JSON.stringify({"messageType" : "logout"}));
             callback();
         };
 
