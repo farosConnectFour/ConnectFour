@@ -1,5 +1,5 @@
 (function(){
-    var gameController = function($scope, $location, GameService) {
+    var gameController = function($scope, $location) {
         var board = []
         for (var row = 0; row < 6; row++) {
             var cols = [];
@@ -18,5 +18,5 @@
         });
     };
 
-    angular.module("app").controller("GameController", ["$scope", "$location", "GameService", gameController])
+    angular.module("app").controller("GameController", ["$scope", "$location", gameController])
 })();

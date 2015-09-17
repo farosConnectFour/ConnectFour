@@ -140,7 +140,7 @@ var self = module.exports = {
     },
 
     watchGame : function(client, clients, gameId){
-        this.games.forEach(function(game){
+        games.forEach(function(game){
             if(game.gameId == gameId){
                 if(game.watchers.indexOf(client.user.id) != -1){
                     var messageError = {messageType: 'error', error: "You are already watching this game..."};
