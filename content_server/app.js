@@ -32,8 +32,6 @@ contentSocket.on('connection', function(client){
             ChatBoxService.sendPrivateMessage(receiver, client, incomingData.message);
         } else if(incomingData.messageType === "createGame") {
             GameService.createGame(client, clients, incomingData.game);
-            //console.log(ConnectFourService.getTestWord());
-            //ConnectFourService.newGame(client.user.id, gameId);
         } else if(incomingData.messageType === "initLoadGames"){
             GameService.loadGames(client);
         } else if(incomingData.messageType === "logout"){
@@ -42,9 +40,10 @@ contentSocket.on('connection', function(client){
             client.user = null;
         } else if(incomingData.messageType === "joinGame"){
             GameService.joinGame(client, clients, incomingData.gameId);
-            ConnectFourService.joinGame(client.user.id, incomingData.gameId);
         } else if(incomingData.messageType === "gameInfo"){
             //TODO: return board info
+        } else if(incomingData.messageType === "watchGame"){
+            GameService.watchGame(client, clients, incomingData.gameId);
         }
     });
 

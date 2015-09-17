@@ -3,25 +3,10 @@
         $scope.games = [];
         $scope.$on("initGamesLoaded", function(event, messageData){
             $scope.games = messageData.games;
-            angular.forEach($scope.games, function(game){
-                angular.forEach($scope.players, function(scopePlayer, index){
-                    if(game.host == scopePlayer.userId){
-                        game.host = $scope.players[index];
-                    }
-                    if(game.challenger == scopePlayer.userId){
-                        game.challenger = $scope.players[index];
-                    }
-                });
-            });
             $scope.$apply();
         });
         var createGameListener = $scope.$on("gameCreated", function(event, messageData){
             var game = messageData.game;
-            angular.forEach($scope.players, function(scopePlayer, index){
-                if(game.host == scopePlayer.userId){
-                    game.host = $scope.players[index];
-                }
-            });
             $scope.games.push(game);
             $scope.$apply();
         });
@@ -34,14 +19,6 @@
             angular.forEach($scope.games, function(game, index){
                 if(game.gameId == messageData.game.gameId){
                     $scope.games[index] = messageDataGame;
-                    angular.forEach($scope.players, function(player){
-                        if($scope.games[index].host == player.userId){
-                            $scope.games[index].host = player;
-                        }
-                        if($scope.games[index].challenger == player.userId){
-                            $scope.games[index].challenger = player;
-                        }
-                    });
                 }
             });
             $scope.$apply();
@@ -80,14 +57,25 @@
             var challenger = LobbyService.joinGame(gameId);
 
         };
-        $scope.watchGame = function(gameId){
-            var watcher = LobbyService.watchGame(gameId);
-            angular.forEach($scope.games, function(game, index){
-                if(game.gameId == gameId){
-                    $scope.games[index].watchers.push(watcher);
-                }
+        var newWatcherListener = $scope.$on("newWatcher", function(event, messageData){
+            var watcherId = messageData.watcherId;
+
+            $scope.games.forEach(function(game){
+               if(game.gameId === messageData.gameId){
+                   game.watchers.push(watcherId);
+               }
             });
-            $location.path("/watch")
+            $scope.$apply();
+        });
+
+        var watchTimeListener = $scope.$on("watchTime", function(event, messageData){
+            $location.path("/watch/" + messageData.gameId);
+            $scope.$apply();
+        });
+
+
+        $scope.watchGame = function(gameId){
+            LobbyService.watchGame(gameId);
         };
 
         $scope.currentPage = 1;

@@ -14,7 +14,7 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
                templateUrl: "views/game.html",
                controller: "GameController"
            })
-           .when("/watch", {
+           .when("/watch/:gameId", {
                templateUrl: "views/watch.html",
                controller: "WatchController"
            });

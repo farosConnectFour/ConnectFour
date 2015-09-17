@@ -37,6 +37,10 @@
                     $scope.$broadcast("playerResigned", messageData);
                 } else if (messageData.messageType === "watcherLeft"){
                     $scope.$broadcast("watcherLeft", messageData);
+                } else if (messageData.messageType === "newWatcher"){
+                    $scope.$broadcast("newWatcher", messageData);
+                } else if (messageData.messageType === "watchTime"){
+                    $scope.$broadcast("watchTime", messageData);
                 }
             };
         });
