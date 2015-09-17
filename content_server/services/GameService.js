@@ -2,7 +2,9 @@ var WebSocketService = new (require("./WebSocketService.js"))();
 var Game = require("../models/Game.js");
 
 function GameService(){
-    this.games = [];
+    this.games = [
+
+    ];
     this.currentGameId = 0;
     this.clientIsPlaying = function(clientUserId){
         for(var i = 0 ; i < this.games.length ; i++){
@@ -66,6 +68,7 @@ GameService.prototype.createGame = function(client, clients, game){
         var messageNewGame = {messageType: "gameCreated", game: newGame};
         WebSocketService.broadcast(messageNewGame, clients);
     }
+    console.log(this.games.length);
 };
 
 GameService.prototype.loadGames = function(client){
@@ -97,15 +100,16 @@ GameService.prototype.removeUserFromGames = function(client, clients){
             WebSocketService.broadcast(messageWatcherLeft, clients);
         }
     });
+
     gamesToDelete.forEach(function(index){
         for(var i = 0; i < this.games.length; i++){
             if(this.games[i].gameId === index){
-                this.games.splice(i, 1);
                 var messageGameClosed = {messageType: 'gameClosed', game: this.games[i].gameId};
+                this.games.splice(i, 1);
                 WebSocketService.broadcast(messageGameClosed, clients);
             }
         }
-    });
+    }, this);
 };
 
 GameService.prototype.joinGame = function(client, clients, gameId){
