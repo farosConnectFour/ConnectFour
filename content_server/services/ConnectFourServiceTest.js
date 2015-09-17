@@ -4,7 +4,7 @@
 
 //Private
 var ConnectFour = require('../models/ConnectFour');
-var WebSocketService = new (require("./WebSocketService.js"))();
+var WebSocketService = require("./WebSocketService.js");
 
 var games = [];
 var testWord = undefined;

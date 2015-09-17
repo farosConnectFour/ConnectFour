@@ -3,8 +3,8 @@
  */
 
 var ConnectFour = require('../models/ConnectFour');
-var WebSocketService = new (require("./WebSocketService.js"))();
-var GameService = new (require("./GameService.js"))();
+var WebSocketService = require("./WebSocketService.js");
+var GameService = require("./GameService.js");
 
 function ConnectFourService(){
     this.games = [];

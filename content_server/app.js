@@ -1,10 +1,9 @@
 /**
  * Created by peeteli on 4/09/2015.
  */
-var ChatBoxService = new (require("./services/ChatBoxService.js"))();
+var ChatBoxService = require("./services/ChatBoxService.js");
 var GameService = require("./services/GameService.js");
-//var ConnectFourService = new (require("./services/ConnectFourService.js"))();
-var ConnectFourService = require("./services/ConnectFourServiceTest.js");
+var ConnectFourService = require("./services/ConnectFourService.js");
 
 var express = require('express'),
     app = express(),

@@ -1,4 +1,4 @@
-var WebSocketService = new (require("./WebSocketService.js"))();
+var WebSocketService = require("./WebSocketService.js");
 var Game = require("../models/Game.js");
 
 var games = [],
