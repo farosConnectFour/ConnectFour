@@ -39,8 +39,8 @@ contentSocket.on('connection', function(client){
             GameService.loadGames(client);
         }  else if(incomingData.messageType === "joinGame"){
             GameService.joinGame(client, clients, incomingData.gameId);
-        } else if(incomingData.messageType === "gameInfo"){
-            //TODO: return board info
+        } else if(incomingData.messageType === "getBoard"){
+            ConnectFourService.getGame(client, incomingData.gameId);
         } else if(incomingData.messageType === "watchGame"){
             GameService.watchGame(client, clients, incomingData.gameId);
         } else if(incomingData.messageType === "stopWatching"){

@@ -16,6 +16,14 @@ function getGameByGameId(gameId){
     }
 }
 
+function getGameForPlayer(userId) {
+    for(var i = 0; i < games.length; i++){
+        if(games[i].players.indexOf(userId) > -1){
+            return games[i];
+        }
+    }
+}
+
 //Public
 var self = module.exports = {
 
@@ -31,9 +39,13 @@ var self = module.exports = {
         }
     },
 
-    getGame : function(gameId){
-        return getGameByGameId(gameId);
+    getGame : function(client, gameId){
+        var game = getGameByGameId(gameId);
+        var message = {messageType: 'boardInfo', game : game};
+        WebSocketService.sendToSingleClient(message, client);
     }
+
+
 };
 
 
