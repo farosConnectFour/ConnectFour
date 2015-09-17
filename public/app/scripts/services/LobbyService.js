@@ -15,17 +15,12 @@
                 socket.send(JSON.stringify({"messageType" : "joinGame", "gameId" : gameId}));
             },
             watchGame: function(gameId){
-                //Vraag server als Current User game mag bekijken. Zoja return watcher
-                return {
-                    name: "Watcher",
-                    points: 1100
-                }
+                socket.send(JSON.stringify({"messageType" : "watchGame", "gameId" : gameId}));
             },
             getGames: function(){
                 socket.send(JSON.stringify({"messageType" : "initLoadGames"}));
             }
         }
     }
-
     angular.module("app").service("LobbyService", ["socketFactory", LobbyService])
 })();

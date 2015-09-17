@@ -133,4 +133,22 @@ GameService.prototype.joinGame = function(client, clients, gameId){
     }
 };
 
+GameService.prototype.watchGame = function(client, clients, gameId){
+    this.games.forEach(function(game){
+        if(game.gameId == gameId){
+            if(game.watchers.indexOf(client.user.id) != -1){
+                var messageError = {messageType: 'error', error: "You are already watching this game..."};
+                WebSocketService.sendToSingleClient(messageError, client);
+            } else{
+                game.watchers.push(client.user.id);
+                var messagePlayTime = {messageType: 'newWatcher', gameId: gameId, watcherId: client.user.id};
+                WebSocketService.broadcast(messagePlayTime, clients);
+
+                var messageWatchTime = {messageType: 'watchTime', gameId: gameId};
+                WebSocketService.sendToSingleClient(messageWatchTime, client);
+            }
+        }
+    });
+};
+
 module.exports = GameService;

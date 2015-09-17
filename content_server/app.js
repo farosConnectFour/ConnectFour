@@ -40,6 +40,8 @@ contentSocket.on('connection', function(client){
             client.user = null;
         } else if(incomingData.messageType === "joinGame"){
             GameService.joinGame(client, clients, incomingData.gameId);
+        } else if(incomingData.messageType === "watchGame"){
+            GameService.watchGame(client, clients, incomingData.gameId);
         }
     });
 

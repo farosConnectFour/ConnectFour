@@ -80,14 +80,30 @@
             var challenger = LobbyService.joinGame(gameId);
 
         };
-        $scope.watchGame = function(gameId){
-            var watcher = LobbyService.watchGame(gameId);
-            angular.forEach($scope.games, function(game, index){
-                if(game.gameId == gameId){
-                    $scope.games[index].watchers.push(watcher);
-                }
+        var newWatcherListener = $scope.$on("newWatcher", function(event, messageData){
+            var watchingPlayer;
+            $scope.players.forEach(function(player){
+               if(player.userId === messageData.watcherId){
+                   watchingPlayer = player;
+               }
             });
-            $location.path("/watch")
+
+            $scope.games.forEach(function(game){
+               if(game.gameId === messageData.gameId){
+                   game.watchers.push(watchingPlayer);
+               }
+            });
+            $scope.$apply();
+        });
+
+        var watchTimeListener = $scope.$on("watchTime", function(event, messageData){
+            $location.path("/watch/" + messageData.gameId);
+            $scope.$apply();
+        });
+
+
+        $scope.watchGame = function(gameId){
+            LobbyService.watchGame(gameId);
         };
 
         $scope.currentPage = 1;
