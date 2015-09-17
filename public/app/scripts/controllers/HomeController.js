@@ -30,17 +30,18 @@
                     $scope.$broadcast("gameClosed", messageData);
                 } else if (messageData.messageType === "playTime"){
                     $scope.$broadcast("playTime", messageData);
-                } else if (messageData.messageType === "updateRoom"){
-                    $scope.$broadcast("updateRoom", messageData);
-                } else if (messageData.messageType === "playerResigned"){
-                    $scope.info = messageData.player.username + " resigned this game";
-                    $scope.$broadcast("playerResigned", messageData);
+                } else if (messageData.messageType === "gameStarted"){
+                    $scope.$broadcast("gameStarted", messageData);
                 } else if (messageData.messageType === "watcherLeft"){
                     $scope.$broadcast("watcherLeft", messageData);
                 } else if (messageData.messageType === "newWatcher"){
                     $scope.$broadcast("newWatcher", messageData);
                 } else if (messageData.messageType === "watchTime"){
                     $scope.$broadcast("watchTime", messageData);
+                } else if (messageData.messageType === "involvedGameClosed"){
+                    $scope.$broadcast("involvedGameClosed", messageData);
+                    $scope.info = messageData.reason;
+                    $scope.$apply();
                 }
             };
         });

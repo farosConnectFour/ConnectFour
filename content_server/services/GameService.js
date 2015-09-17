@@ -5,7 +5,7 @@ var Game = require("../models/Game.js");
 var games = [],
     currentGameId = 0;
 
-function clientIsChallenging(clientUserId){
+function clientIsPlaying(clientUserId){
     for(var i = 0 ; i < games.length ; i++){
         if(games[i].challenger == clientUserId || (games[i].host == clientUserId && games[i].challenger != null)){
             return true;
@@ -64,7 +64,7 @@ function closeHostedGames(clientUserId){
 var self = module.exports = {
 
     createGame : function(client, clients, game){
-        if (clientIsChallenging(client.user.id) || clientAlreadyHosting(client.user.id)) {
+        if (clientIsPlaying(client.user.id) || clientAlreadyHosting(client.user.id)) {
             var message = {messageType: 'error', error: "You are already hosting or playing, so you cant create a new Game!"};
             WebSocketService.sendToSingleClient(message, client);
         } else {
@@ -85,8 +85,9 @@ var self = module.exports = {
 
     removeUserFromGames : function(client, clients){
         var gamesToDelete = [];
+        var reason = "";
         games.forEach(function(game){
-            var messageResigned = {messageType: 'playerResigned', player: client.user};
+            var messageResigned = {messageType: 'involvedGameClosed', reason: client.user.username + " resigned from this game due to logout"};
             if(game.host === client.user.id){
                 gamesToDelete.push(game.gameId);
                 if(game.challenger){
@@ -103,7 +104,7 @@ var self = module.exports = {
                 });
             } else if(game.watchers.indexOf(client.user.id) > -1){
                 game.watchers.splice(game.watchers.indexOf(client.user.id), 1);
-                var messageWatcherLeft = {messageType: 'watcherLeft', game: game.gameId, watcher: client.user};
+                var messageWatcherLeft = {messageType: 'watcherLeft', gameId: game.gameId, watcherId: client.user.id};
                 WebSocketService.broadcast(messageWatcherLeft, clients);
             }
         });
@@ -119,7 +120,7 @@ var self = module.exports = {
     },
 
     joinGame : function(client, clients, gameId){
-        if (clientIsChallenging(client.user.id)) {
+        if (clientIsPlaying(client.user.id)) {
             var messageErrorChallenging = {messageType: 'error', error: "you are already playing, So you cannot play in another"};
             WebSocketService.sendToSingleClient(messageErrorChallenging, client);
         } else if(hostTriesToJoinOwnGame(client, gameId)){
@@ -127,8 +128,8 @@ var self = module.exports = {
             WebSocketService.sendToSingleClient(messageErrorHost, client);
         } else {
             var game = setGameChallenger(gameId, client.user.id);
-            var messageUpdateRoom = {messageType: 'updateRoom', game: game};
-            WebSocketService.broadcast(messageUpdateRoom, clients);
+            var messageGameStarted = {messageType: 'gameStarted', gameId: game.gameId, challengerId: game.challenger};
+            WebSocketService.broadcast(messageGameStarted, clients);
 
             ConnectFourService.joinGame(game.challenger, game.gameId);
 

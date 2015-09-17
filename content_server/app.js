@@ -24,6 +24,10 @@ contentSocket.on('connection', function(client){
         if(incomingData.messageType === 'login'){
             client.user = incomingData.user;
             ChatBoxService.connectUser(client, clients);
+        } else if(incomingData.messageType === "logout"){
+            ChatBoxService.logUserOut(client, clients);
+            GameService.removeUserFromGames(client, clients);
+            client.user = null;
         } else if(incomingData.messageType === 'message'){
             ChatBoxService.broadcastMessage(client, clients, incomingData.message);
         } else if(incomingData.messageType === 'privateMessage'){
@@ -33,11 +37,7 @@ contentSocket.on('connection', function(client){
             GameService.createGame(client, clients, incomingData.game);
         } else if(incomingData.messageType === "initLoadGames"){
             GameService.loadGames(client);
-        } else if(incomingData.messageType === "logout"){
-            ChatBoxService.logUserOut(client, clients);
-            GameService.removeUserFromGames(client, clients);
-            client.user = null;
-        } else if(incomingData.messageType === "joinGame"){
+        }  else if(incomingData.messageType === "joinGame"){
             GameService.joinGame(client, clients, incomingData.gameId);
         } else if(incomingData.messageType === "gameInfo"){
             //TODO: return board info

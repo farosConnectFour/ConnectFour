@@ -33,6 +33,7 @@
     <script src="scripts/services/ChatboxService.js"></script>
 
     <script src="scripts/controllers/HomeController.js"></script>
+    <script src="scripts/controllers/ViewController.js"></script>
     <script src="scripts/controllers/NavigationController.js"></script>
     <script src="scripts/controllers/IndexController.js"></script>
     <script src="scripts/controllers/ChatboxController.js"></script>
@@ -51,7 +52,7 @@
         <div class="alert alert-danger" role="alert" ng-show="error">{{error}} <button style="float: right;" ng-click="closeError()">Close</button></div>
         <div class="alert alert-info" role="alert" ng-show="info">{{info}} <button style="float: right;" ng-click="closeInfo()">Close</button></div>
         <div class="contentDiv" ng-controller="IndexController">
-            <div class="gameDiv" ng-view></div>
+            <div class="gameDiv" ng-controller="ViewController" ng-view></div>
             <div class="leaderboardDiv" ng-include="'views/leaderboard.html'"></div>
         </div>
         <div class="chatDiv" ng-include="'views/chatbox.html'"></div>

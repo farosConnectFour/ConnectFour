@@ -1,5 +1,12 @@
 (function(){
-    var gameController = function($scope, $location) {
+    var gameController = function($scope, $location, $interval) {
+        "use strict";
+
+        $scope.$on("involvedGameClosed", function(event, messageData){
+            $interval(function(){
+                $location.path("/lobby");
+            },5000);
+        });
         var board = []
         for (var row = 0; row < 6; row++) {
             var cols = [];
@@ -18,5 +25,5 @@
         });
     };
 
-    angular.module("app").controller("GameController", ["$scope", "$location", gameController])
+    angular.module("app").controller("GameController", ["$scope", "$location","$interval", gameController])
 })();
