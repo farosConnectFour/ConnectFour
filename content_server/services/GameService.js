@@ -107,8 +107,8 @@ var self = module.exports = {
         gamesToDelete.forEach(function(index){
             for(var i = 0; i < games.length; i++){
                 if(games[i].gameId === index){
-                    games.splice(i, 1);
                     var messageGameClosed = {messageType: 'gameClosed', game: games[i].gameId};
+                    games.splice(i, 1);
                     WebSocketService.broadcast(messageGameClosed, clients);
                 }
             }
