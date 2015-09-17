@@ -87,16 +87,16 @@ var self = module.exports = {
             if(game.host === client.user.id){
                 gamesToDelete.push(game.gameId);
                 if(game.challenger){
-                    WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(game.challenger));
+                    WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(game.challenger, clients));
                     game.watchers.forEach(function(watcherId){
-                        WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(watcherId));
+                        WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(watcherId, clients));
                     });
                 }
             } else if(game.challenger === client.user.id){
                 gamesToDelete.push(game.gameId);
-                WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(game.host));
+                WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(game.host, clients));
                 game.watchers.forEach(function(watcherId){
-                    WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(watcherId));
+                    WebSocketService.sendToSingleClient(messageResigned, findClientByUserID(watcherId, clients));
                 });
             } else if(game.watchers.indexOf(client.user.id) > -1){
                 game.watchers.splice(game.watchers.indexOf(client.user.id), 1);
