@@ -1,4 +1,5 @@
 var WebSocketService = require("./WebSocketService.js");
+var ConnectFourService = require("./ConnectFourService.js");
 var Game = require("../models/Game.js");
 
 var games = [],
@@ -72,6 +73,8 @@ var self = module.exports = {
             games.push(newGame);
             var messageNewGame = {messageType: "gameCreated", game: newGame};
             WebSocketService.broadcast(messageNewGame, clients);
+
+            ConnectFourService.newGame(newGame.host, newGame.gameId);
         }
     },
 
@@ -127,15 +130,17 @@ var self = module.exports = {
             var messageUpdateRoom = {messageType: 'updateRoom', game: game};
             WebSocketService.broadcast(messageUpdateRoom, clients);
 
+            ConnectFourService.joinGame(game.challenger, game.gameId);
+
+            var messagePlayTime = {messageType: 'playTime', game: game.gameId};
+            WebSocketService.sendToSingleClient(messagePlayTime, client);
+            WebSocketService.sendToSingleClient(messagePlayTime, findClientByUserID(game.host, clients));
+
             var roomToDelete = closeHostedGames(client.user.id);
             if(roomToDelete != null){
                 var messageDeleteRoom = {messageType: 'gameClosed', game: roomToDelete};
                 WebSocketService.broadcast(messageDeleteRoom, clients);
             }
-
-            var messagePlayTime = {messageType: 'playTime', game: game.gameId};
-            WebSocketService.sendToSingleClient(messagePlayTime, client);
-            WebSocketService.sendToSingleClient(messagePlayTime, findClientByUserID(game.host, clients));
         }
     },
 
