@@ -1,10 +1,10 @@
 /**
  * Created by peeteli on 4/09/2015.
  */
-var Game = require("./models/Game.js");
-var ConnectedUser = require("./models/ConnectedUser.js");
 var ChatBoxService = new (require("./services/ChatBoxService.js"))();
-var GameService = new (require("./services/GameService.js"))();
+var GameService = require("./services/GameService.js");
+//var ConnectFourService = new (require("./services/ConnectFourService.js"))();
+var ConnectFourService = require("./services/ConnectFourServiceTest.js");
 
 var express = require('express'),
     app = express(),
@@ -32,6 +32,8 @@ contentSocket.on('connection', function(client){
             ChatBoxService.sendPrivateMessage(receiver, client, incomingData.message);
         } else if(incomingData.messageType === "createGame") {
             GameService.createGame(client, clients, incomingData.game);
+            //console.log(ConnectFourService.getTestWord());
+            //ConnectFourService.newGame(client.user.id, gameId);
         } else if(incomingData.messageType === "initLoadGames"){
             GameService.loadGames(client);
         } else if(incomingData.messageType === "logout"){
@@ -40,6 +42,9 @@ contentSocket.on('connection', function(client){
             client.user = null;
         } else if(incomingData.messageType === "joinGame"){
             GameService.joinGame(client, clients, incomingData.gameId);
+            ConnectFourService.joinGame(client.user.id, incomingData.gameId);
+        } else if(incomingData.messageType === "gameInfo"){
+            //TODO: return board info
         }
     });
 
