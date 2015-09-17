@@ -8,15 +8,25 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
            })
            .when("/lobby", {
                templateUrl: "views/lobby.html",
-               controller: "LobbyController"
+               controller: "LobbyController",
+               resolve: {
+                   loggedin: checkLoggedin
+               }
+
            })
            .when("/game/:gameId", {
                templateUrl: "views/game.html",
-               controller: "GameController"
+               controller: "GameController",
+               resolve: {
+                   loggedin: checkLoggedin
+               }
            })
            .when("/watch/:gameId", {
                templateUrl: "views/watch.html",
-               controller: "WatchController"
+               controller: "WatchController",
+               resolve: {
+                   loggedin: checkLoggedin
+               }
            });
     })
     .filter('offset', function() {
@@ -29,3 +39,22 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
             }
         };
     });
+
+var checkLoggedin = function($q, $timeout, $http, $location, $rootScope) {
+    var deferred = $q.defer();
+
+    $http.get('/loggedin').success(function(user) {
+        $rootScope.errorMessage = null;
+        // User is Authenticated
+        if (user !== '0') {
+            deferred.resolve();
+        }
+        // User is Not Authenticated
+        else {
+            deferred.reject();
+            $location.url('/');
+        }
+    });
+
+    return deferred.promise;
+};

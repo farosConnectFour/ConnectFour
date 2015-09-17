@@ -72,6 +72,12 @@ passport.deserializeUser(function(user, done)
     done(null, user);
 });
 
+app.get('/loggedin', function(req, res)
+{
+    console.log('checking authentication');
+    res.send(req.isAuthenticated() ? '1' : '0');
+});
+
 app.post("/login", passport.authenticate('local'), function(req, res)
 {
     connectedUsers.push(req.user.username);
@@ -90,6 +96,8 @@ app.post('/logout', function(req, res)
 app.listen(9999, function() {
     console.log("Listening on port 9999");
 });
+
+
 
 function isConnected(username){
     for(isConnectedIndex = 0; isConnectedIndex < connectedUsers.length; isConnectedIndex++){
