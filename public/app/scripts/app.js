@@ -27,7 +27,8 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
                resolve: {
                    loggedin: checkLoggedin
                }
-           });
+           })
+           .otherwise({redirectTo:"/"});
     })
     .filter('offset', function() {
         return function(input, start) {
