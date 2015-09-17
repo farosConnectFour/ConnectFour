@@ -30,13 +30,10 @@
     };
 
     var gameService = function(socketFactory) {
-        var self = this;
-
         socketFactory.getSocket(function (s){
             socket = s;
         });
 
-        this.onReady = onReady;
         this.onMove = onMove;
         this.onWinner = onWinner;
         this.onDraw = onDraw;
