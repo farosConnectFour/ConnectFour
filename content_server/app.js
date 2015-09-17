@@ -43,6 +43,8 @@ contentSocket.on('connection', function(client){
             //TODO: return board info
         } else if(incomingData.messageType === "watchGame"){
             GameService.watchGame(client, clients, incomingData.gameId);
+        } else if(incomingData.messageType === "stopWatching"){
+            GameService.stopWatching(client, clients, incomingData.gameId);
         }
     });
 

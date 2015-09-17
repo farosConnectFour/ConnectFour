@@ -163,6 +163,19 @@ var self = module.exports = {
         })
     },
 
+    stopWatching : function(client, clients, gameId){
+        games.forEach(function(game){
+            if(game.gameId == gameId){
+                var watcherIndex = game.watchers.indexOf(client.user.id);
+                if(watcherIndex != -1){
+                    game.watchers.splice(watcherIndex, 1);
+                    var messageWatcherLeft = {messageType: 'watcherLeft', gameId: game.gameId, watcherId: client.user.id};
+                    WebSocketService.broadcast(messageWatcherLeft, clients);
+                }
+            }
+        });
+    },
+
     getGameIdForPlayer : function(userId) {
         games.forEach(function (game) {
             if (game.host === userId || game.challenger === userId) {
