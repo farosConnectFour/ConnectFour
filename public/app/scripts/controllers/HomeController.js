@@ -42,6 +42,8 @@
                     $scope.$broadcast("involvedGameClosed", messageData);
                     $scope.info = messageData.reason;
                     $scope.$apply();
+                } else if (messageData.messageType === "boardInfo"){
+                    $scope.$broadcast("boardInfo", messageData);
                 }
             };
         });

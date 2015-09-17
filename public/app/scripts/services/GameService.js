@@ -29,6 +29,10 @@
         socket.emit('info');
     };
 
+    var getBoard = function(gameId){
+        socket.send(JSON.stringify({"messageType" : "getBoard", gameId : gameId}));
+    };
+
     var gameService = function(socketFactory) {
         socketFactory.getSocket(function (s){
             socket = s;
@@ -39,6 +43,7 @@
         this.onDraw = onDraw;
         this.play = play;
         this.getInfo = getInfo;
+        this.getBoard = getBoard;
     };
 
     angular.module("app").service("GameService", ["socketFactory", gameService])
