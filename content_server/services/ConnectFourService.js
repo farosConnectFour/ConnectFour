@@ -51,7 +51,7 @@ function findClientByUserID(userId, clients){
     return -1;
 }
 
-function insertGameToDB(game){
+function insertGameToDB(game, winner){
     var connection = mysql.createConnection({
         host     : 'localhost',
         user     : 'root',
@@ -59,8 +59,12 @@ function insertGameToDB(game){
         database : 'connectFour'
     });
     connection.connect();
-    connection.query('INSERT INTO games SET ?', {player1: game.players[0], player2: game.players[1], rated: game.rated, winner: game.game.winner}, function(err, result){
-        requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result.insertId, password: 'HAHALOLHAHA'});
+    connection.query('INSERT INTO games SET ?', {player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner}, function(err, result){
+        connection.query('UPDATE USERS SET points = points + 10 WHERE userID = ?', [winner],function(){
+            connection.query('UPDATE USERS SET points = points - 10 WHERE userID = ?', [game.currentPlayer],function(){
+                requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result.insertId, password: 'HAHALOLHAHA'});
+            });
+        });
     });
     connection.end();
 }
@@ -88,11 +92,13 @@ var self = module.exports = {
                 result = game.game.play(column);
                 if (result) {
                     result.winner = game.game.winner ? game.currentPlayer : false;
+                    console.log( result.winner ? game.currentPlayer : "");
                     result.currentPlayer = nextPlayer(game.currentPlayer, game.players);
                     game.currentPlayer = nextPlayer(game.currentPlayer, game.players);
 
                     if (game.game.winner) {
-                        insertGameToDB(game);
+                        console.log()
+                        insertGameToDB(game, result.winner);
                         deleteGame(gameId);
                     }
                     var message = {messageType: 'movePlayed', result: result};
