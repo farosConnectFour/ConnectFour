@@ -60,6 +60,14 @@ function closeHostedGames(clientUserId){
     return null;
 }
 
+function getGameByGameId(gameId){
+    for(var i = 0; i < games.length; i++){
+        if(games[i].gameId == gameId){
+            return games[i];
+        }
+    }
+}
+
 //Public
 var self = module.exports = {
 
@@ -74,7 +82,7 @@ var self = module.exports = {
             var messageNewGame = {messageType: "gameCreated", game: newGame};
             WebSocketService.broadcast(messageNewGame, clients);
 
-            ConnectFourService.newGame(newGame.host, newGame.gameId);
+            //ConnectFourService.newGame(newGame.host, newGame.gameId);
         }
     },
 
@@ -131,7 +139,7 @@ var self = module.exports = {
             var messageGameStarted = {messageType: 'gameStarted', gameId: game.gameId, challengerId: game.challenger};
             WebSocketService.broadcast(messageGameStarted, clients);
 
-            ConnectFourService.joinGame(game.challenger, game.gameId);
+            ConnectFourService.newGame(game.host, game.challenger, game.gameId);
 
             var messagePlayTime = {messageType: 'playTime', game: game.gameId};
             WebSocketService.sendToSingleClient(messagePlayTime, client);
@@ -174,6 +182,10 @@ var self = module.exports = {
                 }
             }
         });
+    },
+
+    getWatchersForGame : function(gameId) {
+        return getGameByGameId(gameId).watchers;
     },
 
     getGameIdForPlayer : function(userId) {

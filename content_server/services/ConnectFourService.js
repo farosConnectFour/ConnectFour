@@ -24,27 +24,77 @@ function getGameForPlayer(userId) {
     }
 }
 
+function nextPlayer(currentPlayer, players) {
+    return currentPlayer === players[0] ? players[1] : players[0];
+}
+
+function getStartingPlayer(){
+    return Math.floor(Math.random() * 2);
+}
+
+function deleteGame(gameId){
+    for(var i = 0; i < games.length; i++){
+        if(games[i].gameId === gameId){
+            games.splice(i, 1);
+        }
+    }
+}
+
+function findClientByUserID(userId, clients){
+    for (var client in clients){
+        if(clients[client].user && clients[client].user.id === userId){
+            return clients[client];
+        }
+    }
+    return -1;
+}
+
 //Public
 var self = module.exports = {
 
-    newGame : function(host, gameId){
-        var newGame = {game: new ConnectFour(), gameId: gameId, players: [host], currentPlayer: host};
+    newGame : function(host, challenger, gameId){
+        var players = [host, challenger];
+        var newGame = {game: new ConnectFour(), gameId: gameId, players: players, currentPlayer: players[getStartingPlayer()]};
         games.push(newGame);
-    },
-
-    joinGame : function(challenger, gameId){
-        var game = getGameByGameId(gameId);
-        if(game.players.length === 1){
-            game.players.push(challenger);
-        }
     },
 
     getGame : function(client, gameId){
         var game = getGameByGameId(gameId);
         var message = {messageType: 'boardInfo', game : game};
         WebSocketService.sendToSingleClient(message, client);
-    }
+    },
 
+    makeAMove: function(clients, gameId, playerId, column, watcherIds, leaderboardServer) {
+        var game = getGameByGameId(gameId);
+        if (game) {
+            var result;
+            if (playerId === game.currentPlayer) {
+                //console.log(leaderboardServer);
+                //leaderboardServer.send("/app/gamePlayed", {}, JSON.stringify({gameId: gameId}));
+                result = game.game.play(column);
+                if (result) {
+                    result.winner = game.game.winner ? game.currentPlayer : false;
+                    result.currentPlayer = nextPlayer(game.currentPlayer, game.players);
+                    game.currentPlayer = nextPlayer(game.currentPlayer, game.players);
+
+                    if (game.game.winner) {
+                        deleteGame(gameId);
+                        //TODO: close room, broadcast
+                    }
+                    var message = {messageType: 'movePlayed', result: result};
+                    game.players.forEach(function (playerId) {
+                        WebSocketService.sendToSingleClient(message, findClientByUserID(playerId, clients));
+                    });
+                    watcherIds.forEach(function (watcherId) {
+                        WebSocketService.sendToSingleClient(message, findClientByUserID(watcherId, clients));
+                    });
+                } else {
+                    var message = {messageType: 'error', error: "Illegal move played"};
+                    WebSocketService.sendToSingleClient(message, findClientByUserID(playerId, clients));
+                }
+            }
+        }
+    }
 
 };
 

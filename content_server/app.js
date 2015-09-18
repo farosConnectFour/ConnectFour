@@ -9,10 +9,21 @@ var express = require('express'),
     app = express(),
     http = require('http'),
     sockjs = require('sockjs'),
+    sockjs2 = require('sockjs-client'),
     contentSocket = sockjs.createServer({sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'}),
     server = http.createServer();
+    //blub = new SockJS('http://10.1.15.60:8080/connectFour/gamePlayed'),
+    //url = 'http://10.1.15.60:8080/connectFour/gamePlayed',
+    //Stomp = require('stomp'),
+    //leaderboardServer = Stomp.over(blub);
 
 var clients = {};
+
+//leaderboardServer.connect({}, function(){
+//    console.log('jeeeeej');
+//});
+//
+//console.log(leaderboardServer);
 
 contentSocket.installHandlers(server, {prefix:'/contentSocket'});
 contentSocket.on('connection', function(client){
@@ -37,7 +48,7 @@ contentSocket.on('connection', function(client){
             GameService.createGame(client, clients, incomingData.game);
         } else if(incomingData.messageType === "initLoadGames"){
             GameService.loadGames(client);
-        }  else if(incomingData.messageType === "joinGame"){
+        } else if(incomingData.messageType === "joinGame"){
             GameService.joinGame(client, clients, incomingData.gameId);
         } else if(incomingData.messageType === "getBoard"){
             ConnectFourService.getGame(client, incomingData.gameId);
@@ -45,6 +56,9 @@ contentSocket.on('connection', function(client){
             GameService.watchGame(client, clients, incomingData.gameId);
         } else if(incomingData.messageType === "stopWatching"){
             GameService.stopWatching(client, clients, incomingData.gameId);
+        } else if(incomingData.messageType === "makeAMove"){
+            var watcherIds = GameService.getWatchersForGame(incomingData.gameId);
+            ConnectFourService.makeAMove(clients, incomingData.gameId, client.user.id, incomingData.column, watcherIds, leaderboardServer);
         }
     });
 

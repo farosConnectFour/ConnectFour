@@ -74,7 +74,6 @@ passport.deserializeUser(function(user, done)
 
 app.get('/loggedin', function(req, res)
 {
-    console.log('checking authentication');
     res.send(req.isAuthenticated() ? '1' : '0');
 });
 

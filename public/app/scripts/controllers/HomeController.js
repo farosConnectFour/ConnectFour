@@ -44,7 +44,10 @@
                     $scope.$apply();
                 } else if (messageData.messageType === "boardInfo"){
                     $scope.$broadcast("boardInfo", messageData);
+                } else if (messageData.messageType === "movePlayed"){
+                    $scope.$broadcast("movePlayed", messageData);
                 }
+
             };
         });
         $scope.closeError = function(){

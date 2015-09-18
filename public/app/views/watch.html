@@ -1,2 +1,25 @@
-<h2>WATCHING GAME</h2>
-<button class="btn" ng-click="stopWatching()">Stop watching!</button>
+<div class="information">
+    <h4>{{players[game.currentPlayer - 1].name}}'s turn</h4>
+</div>
+<div class="gameField">
+    <table class="fieldTable">
+        <thead>
+        <tr>
+            <th ng-repeat="(n, col) in game.board[0] track by $index" class="col-md-1">
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in game.board">
+            <td ng-repeat="col in row track by $index">
+                <div ng-class="{empty: col === 0, yellow: col === 1, red: col === 2, circle: true}"></div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="options">
+    <div class="optionRight">
+        <button class="btn" ng-click="stopWatching()">Stop watching!</button>
+    </div>
+</div>

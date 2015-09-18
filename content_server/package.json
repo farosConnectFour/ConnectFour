@@ -6,7 +6,10 @@
   "dependencies": {
     "express": "^4.13.3",
     "http": "0.0.0",
-    "sockjs": "^0.3.15"
+    "sockjs": "^0.3.15",
+    "sockjs-client": "^1.0.3",
+    "stomp": "^0.1.1",
+    "stomp-client": "^0.8.0"
   },
   "devDependencies": {},
   "scripts": {

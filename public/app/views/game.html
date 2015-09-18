@@ -21,11 +21,11 @@
 </div>
 <div class="options">
     <div class="optionLeft">
-        <h4>Game.result: {{game.result}}</h4>
-        <h5>game.waitingForRematch: Waiting for opponent..</h5>
+        <h4 ng-show="game.isFinished">Game.result: {{game.result}}</h4>
+        <h5 ng-show="game.waitingForRematch">game.waitingForRematch: Waiting for opponent..</h5>
     </div>
     <div class="optionRight">
-        <button class="btn" ng-click="game.requestRematch()">Rematch?</button>
+        <button class="btn" ng-click="game.requestRematch()" ng-show="game.isFinished">Rematch?</button>
         <button class="btn" ng-click="game.leave()">Leave</button>
     </div>
 </div>
