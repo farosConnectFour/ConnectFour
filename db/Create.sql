@@ -13,7 +13,7 @@ CREATE TABLE games(
 	gameId bigint not null AUTO_INCREMENT,
     player1 bigint not null,
     player2 bigint not null,
-    ranked tinyint not null,
+    rated tinyint not null,
     winner bigint not null,
     PRIMARY KEY(gameId),
     FOREIGN KEY (player1)
@@ -43,7 +43,7 @@ INSERT INTO users (name, password, points) values
 ("Joris", "pass",750),
 ("Tom", "pass",700);
 
-INSERT INTO games (player1, player2, ranked,winner) values
+INSERT INTO games (player1, player2, rated,winner) values
 (1,4,1,1),
 (4,7,1,2),
 (5,11,1,2),
