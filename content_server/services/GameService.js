@@ -139,7 +139,7 @@ var self = module.exports = {
             var messageGameStarted = {messageType: 'gameStarted', gameId: game.gameId, challengerId: game.challenger};
             WebSocketService.broadcast(messageGameStarted, clients);
 
-            ConnectFourService.newGame(game.host, game.challenger, game.gameId);
+            ConnectFourService.newGame(game.host, game.challenger, game.gameId, game.rated);
 
             var messagePlayTime = {messageType: 'playTime', game: game.gameId};
             WebSocketService.sendToSingleClient(messagePlayTime, client);

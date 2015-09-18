@@ -16,7 +16,7 @@
         var stompClient;
 
         $scope.connect = function(){
-            var socket = new SockJS("http://10.1.15.60:8080/connectfour/gamePlayed");
+            var socket = new SockJS("http://10.1.15.60:8080/connectfour");
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function(frame) {
                 $scope.connected = true;
@@ -43,7 +43,7 @@
         };
         $scope.connect();
         $scope.update = function(){
-            stompClient.send('/app/gamePlayed', {}, JSON.stringify({'gameId': Math.floor((Math.random() * 10) + 1)}));
+            stompClient.send('/', {}, JSON.stringify({'gameId': Math.floor((Math.random() * 10) + 1)}));
         }
     };
 

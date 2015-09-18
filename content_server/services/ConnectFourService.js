@@ -4,7 +4,9 @@
 
 //Private
 var ConnectFour = require('../models/ConnectFour');
-var WebSocketService = require("./WebSocketService.js");
+var WebSocketService = require('./WebSocketService.js');
+var requestify = require('requestify');
+var mysql = require('mysql');
 
 var games = [];
 
@@ -49,12 +51,26 @@ function findClientByUserID(userId, clients){
     return -1;
 }
 
+function insertGameToDB(game){
+    var connection = mysql.createConnection({
+        host     : 'localhost',
+        user     : 'root',
+        password : 'root',
+        database : 'connectFour'
+    });
+    connection.connect();
+    connection.query('INSERT INTO games SET ?', {player1: game.players[0], player2: game.players[1], rated: game.rated, winner: game.game.winner}, function(err, result){
+        requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result.insertId, password: 'HAHALOLHAHA'});
+    });
+    connection.end();
+}
+
 //Public
 var self = module.exports = {
 
-    newGame : function(host, challenger, gameId){
+    newGame : function(host, challenger, gameId, rated){
         var players = [host, challenger];
-        var newGame = {game: new ConnectFour(), gameId: gameId, players: players, currentPlayer: players[getStartingPlayer()]};
+        var newGame = {game: new ConnectFour(), gameId: gameId, players: players, currentPlayer: players[getStartingPlayer()], rated: rated};
         games.push(newGame);
     },
 
@@ -64,13 +80,11 @@ var self = module.exports = {
         WebSocketService.sendToSingleClient(message, client);
     },
 
-    makeAMove: function(clients, gameId, playerId, column, watcherIds, leaderboardServer) {
+    makeAMove: function(clients, gameId, playerId, column, watcherIds) {
         var game = getGameByGameId(gameId);
         if (game) {
             var result;
             if (playerId === game.currentPlayer) {
-                //console.log(leaderboardServer);
-                //leaderboardServer.send("/app/gamePlayed", {}, JSON.stringify({gameId: gameId}));
                 result = game.game.play(column);
                 if (result) {
                     result.winner = game.game.winner ? game.currentPlayer : false;
@@ -78,8 +92,8 @@ var self = module.exports = {
                     game.currentPlayer = nextPlayer(game.currentPlayer, game.players);
 
                     if (game.game.winner) {
+                        insertGameToDB(game);
                         deleteGame(gameId);
-                        //TODO: close room, broadcast
                     }
                     var message = {messageType: 'movePlayed', result: result};
                     game.players.forEach(function (playerId) {
