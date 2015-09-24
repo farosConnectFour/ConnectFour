@@ -1,8 +1,12 @@
 <h2>Lobby</h2>
+<label>Search for host: </label>
+<input type="text" ng-model="searchHost">
+<!--<label>Search for challenger: </label>-->
+<!--<input type="text" ng-model="searchChallenger">-->
 <div>
     <pagination total-items="games.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
 </div>
-<div class="lobbyGame" ng-repeat="game in games | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+<div class="lobbyGame" ng-repeat="game in games | hostfilter:searchHost:players | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
     <div class="">
         <p>{{game.name}}</p>
         <p>Host: {{players[game.host-1].name}} ({{players[game.host-1].points}})</p>

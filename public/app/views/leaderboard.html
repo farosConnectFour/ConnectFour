@@ -1,6 +1,8 @@
 <div class="leaderboardDiv">
     <h3>Leaderboards</h3>
-    <pagination total-items="players.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
+    <label>Search for player: </label>
+    <input ng-model="searchText" type="text">
+    <pagination total-items="(players | filter:{name:searchText}).length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -9,7 +11,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="player in players | orderBy:'-points' | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+            <tr ng-repeat="player in players | filter:{name:searchText} | orderBy:'-points' | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
                 <td>{{player.name}}</td>
                 <td>{{player.points}}</td>
             </tr>
