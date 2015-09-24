@@ -51,7 +51,7 @@ function findClientByUserID(userId, clients){
     return -1;
 }
 
-function insertGameToDB(game, winner){
+function insertGameToDBOnWinner(game, winner){
     var connection = mysql.createConnection({
         host     : 'localhost',
         user     : 'root',
@@ -61,8 +61,22 @@ function insertGameToDB(game, winner){
     });
     connection.connect();
     connection.query('INSERT INTO games SET ?;UPDATE USERS SET points = points + 10 WHERE userID = ?;UPDATE USERS SET points = points - 10 WHERE userID = ?', [{player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner},winner,game.currentPlayer], function(err, result){
-        console.log(err);
         requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result[0].insertId, password: 'HAHALOLHAHA'});
+    });
+    connection.end();
+}
+
+function insertGameToDBOnDraw(game){
+    var connection = mysql.createConnection({
+        host     : 'localhost',
+        user     : 'root',
+        password : 'root',
+        database : 'connectFour',
+        multipleStatements: true
+    });
+    connection.connect();
+    connection.query('INSERT INTO games SET ?', {player1: game.players[0], player2: game.players[1], rated: game.rated, winner: null}, function(err, result){
+        requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result.insertId, password: 'HAHALOLHAHA'});
     });
     connection.end();
 }
@@ -96,7 +110,6 @@ var self = module.exports = {
                     game.players.forEach(function (playerId) {
                         WebSocketService.sendToSingleClient(message, findClientByUserID(playerId, clients));
                     });
-
                     watcherIds.forEach(function (watcherId) {
                         WebSocketService.sendToSingleClient(message, findClientByUserID(watcherId, clients));
                     });
@@ -109,8 +122,18 @@ var self = module.exports = {
                         game.players.forEach(function (playerId) {
                             WebSocketService.sendToSingleClient(winnerMessage, findClientByUserID(playerId, clients));
                         });
-                        WebSocketService.sendToSingleClient(message, findClientByUserID(playerId, clients));
-                        insertGameToDB(game, result.winner);
+                        insertGameToDBOnWinner(game, result.winner);
+                        deleteGame(gameId);
+                        callbackIfGameEnded(gameId);
+                    } else if(game.game.isDraw()){
+                        var drawMessage = {messageType: 'involvedGameClosed', reason: "Closing game in 5 seconds because it is a draw! :("};
+                        watcherIds.forEach(function (watcherId) {
+                            WebSocketService.sendToSingleClient(drawMessage, findClientByUserID(watcherId, clients));
+                        });
+                        game.players.forEach(function (playerId) {
+                            WebSocketService.sendToSingleClient(drawMessage, findClientByUserID(playerId, clients));
+                        });
+                        insertGameToDBOnDraw(game);
                         deleteGame(gameId);
                         callbackIfGameEnded(gameId);
                     }
