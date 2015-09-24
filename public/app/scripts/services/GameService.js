@@ -15,6 +15,10 @@
         socket.send(JSON.stringify({"messageType" : "makeAMove", gameId : gameId, column: col}));
     };
 
+    var resign = function(gameId){
+        socket.send(JSON.stringify({"messageType" : "resign", gameId: gameId}));
+    };
+
     var gameService = function(socketFactory) {
         socketFactory.getSocket(function (s){
             socket = s;
@@ -22,25 +26,8 @@
 
         this.getBoard = getBoard;
         this.play = play;
+        this.resign = resign;
     };
 
     angular.module("app").service("GameService", ["socketFactory", gameService])
 })();
-
-//var getInfo = function( callback) {
-//    socket.on('info', callback);
-//    socket.emit('info');
-//};
-//
-//var onMove = function (callback) {
-//    socket.on('move', function (data) {
-//        callback(data);
-//    });
-//};
-//var onWinner = function (callback) {
-//    socket.on('winner', callback);
-//};
-//
-//var onDraw = function(callback) {
-//    socket.on('draw', callback);
-//};

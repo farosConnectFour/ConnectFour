@@ -33,7 +33,9 @@ contentSocket.on('connection', function(client){
             ChatBoxService.broadcastMessage(client, clients, incomingData.message);
         } else if(incomingData.messageType === 'privateMessage'){
             var receiver = findClientByUsername(incomingData.receiver);
-            ChatBoxService.sendPrivateMessage(receiver, client, incomingData.message);
+            if(receiver){
+                ChatBoxService.sendPrivateMessage(receiver, client, incomingData.message);
+            }
         } else if(incomingData.messageType === "createGame") {
             GameService.createGame(client, clients, incomingData.game);
         } else if(incomingData.messageType === "initLoadGames"){
@@ -55,6 +57,8 @@ contentSocket.on('connection', function(client){
                     GameService.removeGame(gameId, clients);
                 });
             }
+        } else if(incomingData.messageType === "resign") {
+
         }
     });
 

@@ -29,8 +29,16 @@
                     $scope.messages = findGeneralTab().messages;
                     $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
                     scrollTabDown(findGeneralTab());
+
+                    if(findTabByUsername(messageData.user.username)){
+                        var privateMessageTab = findTabByUsername(messageData.user.username);
+                        $scope.messages = privateMessageTab.messages;
+                        $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
+                        scrollTabDown(privateMessageTab);
+                    }
                 }
             });
+
             initialLoadListener = $scope.$on("initialLoad", function(event, messageData){
                 $scope.$apply($scope.connectedUsers = messageData.connectedUsers);
             });
@@ -40,12 +48,21 @@
                 $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(messageData.username), 1));
                 $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
                 scrollTabDown(findGeneralTab());
+
+                if(findTabByUsername(messageData.username)){
+                    var privateMessageTab = findTabByUsername(messageData.username);
+                    $scope.messages = privateMessageTab.messages;
+                    $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
+                    scrollTabDown(privateMessageTab);
+                }
             });
+
             messageListener = $scope.$on("message", function(event, messageData){
                 $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
                 scrollTabDown(findGeneralTab());
             });
+
             privateMessageListener = $scope.$on("privateMessage", function(event, messageData){
                 var privateMessageTab = undefined;
                 if (messageData.sender === currentUser.username) {

@@ -9,7 +9,7 @@
         };
 
         $scope.connect = function(){
-            var socket = new SockJS("http://10.1.15.60:8080/connectfour");
+            var socket = new SockJS("http://10.1.15.94:8080/connectfour");
             var stompClient = Stomp.over(socket);
             stompClient.connect({}, function() {
                 stompClient.subscribe('/topic/playerChanges', function(gamePlayed){

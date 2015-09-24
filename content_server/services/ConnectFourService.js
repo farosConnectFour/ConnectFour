@@ -143,5 +143,10 @@ var self = module.exports = {
                 }
             }
         }
+    },
+
+    resign : function(client, clients, gameId){
+        var game = getGameByGameId(gameId);
+
     }
 };

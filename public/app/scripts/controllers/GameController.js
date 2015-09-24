@@ -29,12 +29,15 @@
             $scope.$apply();
         });
 
-
-
         $scope.game.play = function(col){
             if(isMyTurn($scope.game.currentPlayer)) {
                 GameService.play(gameId, col);
             }
+        };
+
+        $scope.game.leave = function(){
+            GameService.resign(gameId);
+            $location.path("/lobby");
         };
 
         GameService.getBoard(gameId);
