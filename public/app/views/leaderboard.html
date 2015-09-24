@@ -29,7 +29,7 @@
             <tr ng-repeat="game in latestGames">
                 <td>{{game.player1}}</td>
                 <td>{{game.player2}}</td>
-                <td>{{game.winner}}</td>
+                <td>{{game.winner || "Draw"}}</td>
                 <td>{{game.rated}}</td>
             </tr>
         </tbody>

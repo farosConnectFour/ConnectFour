@@ -14,7 +14,7 @@ CREATE TABLE games(
     player1 bigint not null,
     player2 bigint not null,
     rated tinyint not null,
-    winner bigint not null,
+    winner bigint,
     PRIMARY KEY(gameId),
     FOREIGN KEY (player1)
 		REFERENCES users(userId)
@@ -28,29 +28,18 @@ CREATE TABLE games(
 );
 
 INSERT INTO users (name, password, points) values
-("Dimitri", "pass",1350),
-("Lieven", "pass",1300),
-("Kwinten", "pass",1250),
-("Sara", "pass",1200),
-("Peter", "pass",1150),
-("Michael", "pass",1100),
-("Christophe", "pass",1050),
+("Dimitri", "pass",1000),
+("Lieven", "pass",1000),
+("Kwinten", "pass",1000),
+("Sara", "pass",1000),
+("Peter", "pass",1000),
+("Michael", "pass",1000),
+("Christophe", "pass",1000),
 ("Wim", "pass",1000),
-("Johan", "pass",950),
-("Jessica", "pass",900),
-("Jeroen", "pass",850),
-("Sven", "pass",800),
-("Joris", "pass",750),
-("Tom", "pass",700);
+("Johan", "pass",1000),
+("Jessica", "pass",1000),
+("Jeroen", "pass",1000),
+("Sven", "pass",1000),
+("Joris", "pass",1000),
+("Tom", "pass",1000);
 
-INSERT INTO games (player1, player2, rated,winner) values
-(1,4,1,1),
-(4,7,1,2),
-(5,11,1,2),
-(3,2,0,1),
-(2,8,1,1),
-(2,4,1,2),
-(6,5,1,2),
-(8,9,0,1),
-(2,1,1,1),
-(1,9,1,2);
