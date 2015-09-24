@@ -1,10 +1,7 @@
 <div class="chatDiv">
     <div id="chatbox">
-        <aside id="usersOverview">
-            <div id="usersHeader">Users</div>
-            <ul id="connectedUsersList">
-                <li class="connectedUser" ng-repeat="user in connectedUsers" ng-click="openPrivateChat(user)">{{user.username}}</li>
-            </ul>
+        <aside>
+            <my-chat-list></my-chat-list>
         </aside>
         <section id="textbox">
             <tabset>

@@ -29,23 +29,11 @@ angular.module("app", ['ngRoute','ui.bootstrap'])
                }
            })
            .otherwise({redirectTo:"/"});
-    })
-    .filter('offset', function() {
-        return function(input, start) {
-            if (input) {
-                start = parseInt(start, 10);
-                return input.slice(start);
-            } else{
-                return [];
-            }
-        };
     });
 
-var checkLoggedin = function($q, $timeout, $http, $location, $rootScope) {
+var checkLoggedin = function($q, $http, $location) {
     var deferred = $q.defer();
-
     $http.get('/loggedin').success(function(user) {
-        $rootScope.errorMessage = null;
         // User is Authenticated
         if (user !== '0') {
             deferred.resolve();
@@ -56,6 +44,5 @@ var checkLoggedin = function($q, $timeout, $http, $location, $rootScope) {
             $location.url('/');
         }
     });
-
     return deferred.promise;
 };

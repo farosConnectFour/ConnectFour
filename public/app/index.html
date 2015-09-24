@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="styles/lobbyGame.css">
     <link rel="stylesheet" href="styles/index.css">
 
+    <!--vendors-->
     <script src="scripts/vendor/socketio/socket.io.js"></script>
     <script src="scripts/vendor/jquery/jquery-2.1.4.min.js"></script>
     <script src="http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js"></script>
@@ -21,11 +22,14 @@
     <script src="scripts/vendor/sockjs/socks-0.3.4.js"></script>
     <script src="scripts/vendor/stompjs/stomp.js"></script>
     <script src="scripts/app.js"></script>
-
+    <!--models-->
     <script src="scripts/models/Player.js"></script>
     <script src="scripts/models/Game.js"></script>
     <script src="scripts/models/PlayedGame.js"></script>
-
+    <!--filters-->
+    <script src="scripts/filters/offsetfilter.js"></script>
+    <script src="scripts/filters/hostfilter.js"></script>
+    <!--services-->
     <script src="scripts/services/SocketFactory.js"></script>
     <script src="scripts/services/LobbyService.js"></script>
     <script src="scripts/services/UserService.js"></script>
@@ -33,7 +37,7 @@
     <script src="scripts/services/ChatboxService.js"></script>
     <script src="scripts/services/GameService.js"></script>
     <script src="scripts/services/WatchService.js"></script>
-
+    <!--controllers-->
     <script src="scripts/controllers/HomeController.js"></script>
     <script src="scripts/controllers/ViewController.js"></script>
     <script src="scripts/controllers/NavigationController.js"></script>
@@ -46,12 +50,14 @@
     <script src="scripts/controllers/GameController.js"></script>
     <script src="scripts/controllers/WatchController.js"></script>
     <script src="scripts/controllers/LatestGamesController.js"></script>
-
+    <!--directives-->
     <script src="scripts/directives/myleaderboard.js"></script>
     <script src="scripts/directives/mylatestgames.js"></script>
     <script src="scripts/directives/mychatbox.js"></script>
     <script src="scripts/directives/myinfomessage.js"></script>
     <script src="scripts/directives/mywarningmessage.js"></script>
+    <script src="scripts/directives/mychatlist.js"></script>
+    <script src="scripts/directives/mychatter.js"></script>
 
     <script src="scripts/logout.js"></script>
 </head>
