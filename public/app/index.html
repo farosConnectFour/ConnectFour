@@ -47,22 +47,25 @@
     <script src="scripts/controllers/WatchController.js"></script>
     <script src="scripts/controllers/LatestGamesController.js"></script>
 
-    <script src="scripts/directives/leaderboard.js"></script>
-    <script src="scripts/directives/latestgames.js"></script>
+    <script src="scripts/directives/myleaderboard.js"></script>
+    <script src="scripts/directives/mylatestgames.js"></script>
+    <script src="scripts/directives/mychatbox.js"></script>
+    <script src="scripts/directives/myinfomessage.js"></script>
+    <script src="scripts/directives/mywarningmessage.js"></script>
 
     <script src="scripts/logout.js"></script>
 </head>
 <body>
     <div class="container" ng-controller="HomeController">
         <div class="navigationDiv" ng-include="'views/menu.html'"></div>
-        <div class="alert alert-danger" role="alert" ng-show="error">{{error}} <button style="float: right;" ng-click="closeError()">Close</button></div>
-        <div class="alert alert-info" role="alert" ng-show="info">{{info}} <button style="float: right;" ng-click="closeInfo()">Close</button></div>
+        <my-warning-message warning="warning"></my-warning-message>
+        <my-info-message info="info"></my-info-message>
         <div class="contentDiv" ng-controller="IndexController">
             <div class="gameDiv" ng-controller="ViewController" ng-view></div>
             <my-leaderboard players="players"></my-leaderboard>
             <my-latest-games></my-latest-games>
         </div>
-        <div class="chatDiv" ng-include="'views/chatbox.html'"></div>
+        <my-chatbox></my-chatbox>
     </div>
 </body>
 </html>
