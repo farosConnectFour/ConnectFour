@@ -5,7 +5,7 @@
             return $http.get("http://10.1.15.60:8080/connectfour/api/games").then(function(response){
                 var games = [];
                 angular.forEach(response.data, function(value){
-                    games.push(new PlayedGame(value.gameId, value.player1, value.player2, value.winner, value.ranked));
+                    games.push(new PlayedGame(value.gameId, value.player1, value.player2, value.winner, value.rated));
                 });
                 return games;
             });

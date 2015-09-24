@@ -56,15 +56,13 @@ function insertGameToDB(game, winner){
         host     : 'localhost',
         user     : 'root',
         password : 'root',
-        database : 'connectFour'
+        database : 'connectFour',
+        multipleStatements: true
     });
     connection.connect();
-    connection.query('INSERT INTO games SET ?', {player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner}, function(err, result){
-        connection.query('UPDATE USERS SET points = points + 10 WHERE userID = ?', [winner],function(){
-            connection.query('UPDATE USERS SET points = points - 10 WHERE userID = ?', [game.currentPlayer],function(){
-                requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result.insertId, password: 'HAHALOLHAHA'});
-            });
-        });
+    connection.query('INSERT INTO games SET ?;UPDATE USERS SET points = points + 10 WHERE userID = ?;UPDATE USERS SET points = points - 10 WHERE userID = ?', [{player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner},winner,game.currentPlayer], function(err, result){
+        console.log(err);
+        requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result[0].insertId, password: 'HAHALOLHAHA'});
     });
     connection.end();
 }
@@ -84,7 +82,7 @@ var self = module.exports = {
         WebSocketService.sendToSingleClient(message, client);
     },
 
-    makeAMove: function(clients, gameId, playerId, column, watcherIds) {
+    makeAMove: function(clients, gameId, playerId, column, watcherIds, callbackIfGameEnded) {
         var game = getGameByGameId(gameId);
         if (game) {
             var result;
@@ -92,22 +90,30 @@ var self = module.exports = {
                 result = game.game.play(column);
                 if (result) {
                     result.winner = game.game.winner ? game.currentPlayer : false;
-                    console.log( result.winner ? game.currentPlayer : "");
                     result.currentPlayer = nextPlayer(game.currentPlayer, game.players);
                     game.currentPlayer = nextPlayer(game.currentPlayer, game.players);
-
-                    if (game.game.winner) {
-                        console.log()
-                        insertGameToDB(game, result.winner);
-                        deleteGame(gameId);
-                    }
                     var message = {messageType: 'movePlayed', result: result};
                     game.players.forEach(function (playerId) {
                         WebSocketService.sendToSingleClient(message, findClientByUserID(playerId, clients));
                     });
+
                     watcherIds.forEach(function (watcherId) {
                         WebSocketService.sendToSingleClient(message, findClientByUserID(watcherId, clients));
                     });
+
+                    if (game.game.winner) {
+                        var winnerMessage = {messageType: 'involvedGameClosed', reason: "Closing game in 5 seconds because we got a winner!! :)"};
+                        watcherIds.forEach(function (watcherId) {
+                            WebSocketService.sendToSingleClient(winnerMessage, findClientByUserID(watcherId, clients));
+                        });
+                        game.players.forEach(function (playerId) {
+                            WebSocketService.sendToSingleClient(winnerMessage, findClientByUserID(playerId, clients));
+                        });
+                        WebSocketService.sendToSingleClient(message, findClientByUserID(playerId, clients));
+                        insertGameToDB(game, result.winner);
+                        deleteGame(gameId);
+                        callbackIfGameEnded(gameId);
+                    }
                 } else {
                     var message = {messageType: 'error', error: "Illegal move played"};
                     WebSocketService.sendToSingleClient(message, findClientByUserID(playerId, clients));
@@ -115,100 +121,4 @@ var self = module.exports = {
             }
         }
     }
-
 };
-
-
-
-
-
-
-//
-//var ConnectFour = require('../models/ConnectFour');
-//var WebSocketService = require("./WebSocketService.js");
-//
-//function ConnectFourService(){
-//    this.games = [];
-//    //this.players = [];
-//    //this.currentPlayer = 0;
-//    //this.game;
-//    this.getGameByGameId = function(gameId){
-//        this.games.forEach(function(game){
-//            if(game.gameId === gameId){
-//                return game;
-//            }
-//        })
-//    };
-//
-//}
-//
-//ConnectFourService.prototype.newGame = function(host, gameId){
-//    var newGame = {game: new ConnectFour(), gameId: gameId, players: [host], currentPlayer: host};
-//    this.games.push(newGame);
-//};
-//
-//ConnectFourService.prototype.joinGame = function(challenger, gameId){
-//    console.log(gameId);
-//    console.log(this.games);
-//    var game = this.getGameByGameId(gameId);
-//    console.log(game);
-//    if(game.players.length === 1){
-//        game.players.push(challenger);
-//    }
-//
-//    console.log(game);
-//};
-//
-//ConnectFourService.prototype.addPlayer = function(challenger){
-//    if(this.players.length === 1) {
-//        this.players.push(challenger);
-//    }
-//};
-//
-//ConnectFourService.prototype.removePlayer = function (removedPlayer) {
-//    var plys = this.players.length;
-//
-//    for (var i = 0; i < plys; i++) {
-//        var ply = this.players[i];
-//
-//        if (ply.id === removedPlayer.id) {
-//            this.players.splice(i, 1);
-//
-//            if (this.currentPlayer > i) {
-//                this.currentPlayer--;
-//            } else if (this.currentPlayer === i) {
-//                this.currentPlayer--;
-//                //inform next player that its his turn..
-//            }
-//
-//            return;
-//        }
-//    }
-//};
-//
-//ConnectFourService.prototype.play = function (ply, col) {
-//    var result;
-//
-//    if (ply.id === this.players[this.currentPlayer].id) {
-//        result = this.game.play(col);
-//        this.nextPlayer();
-//    }
-//
-//    return result;
-//};
-//
-//ConnectFourService.prototype.getWinner = function() {
-//    return this.game.getWinner();
-//};
-//
-//ConnectFourService.prototype.isDraw = function() {
-//    return this.game.isDraw();
-//};
-//
-//ConnectFourService.prototype.nextPlayer = function() {
-//    if (++this.currentPlayer === this.players.length) {
-//        this.currentPlayer = 0;
-//    }
-//};
-//
-//module.exports = ConnectFourService;

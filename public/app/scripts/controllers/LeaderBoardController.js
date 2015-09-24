@@ -36,6 +36,8 @@
                         if($scope.latestGames.length >= 3) {
                             $scope.latestGames.pop();
                             $scope.latestGames.unshift(lastGame);
+                        } else{
+                            $scope.latestGames.unshift(lastGame);
                         }
                     $scope.$apply();
                 });

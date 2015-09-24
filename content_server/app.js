@@ -39,16 +39,22 @@ contentSocket.on('connection', function(client){
         } else if(incomingData.messageType === "initLoadGames"){
             GameService.loadGames(client);
         } else if(incomingData.messageType === "joinGame"){
-            GameService.joinGame(client, clients, incomingData.gameId);
+            GameService.joinGame(client, clients, incomingData.gameId, function(game){
+                ConnectFourService.newGame(game.host, game.challenger, game.gameId, game.rated);
+            });
         } else if(incomingData.messageType === "getBoard"){
             ConnectFourService.getGame(client, incomingData.gameId);
         } else if(incomingData.messageType === "watchGame"){
             GameService.watchGame(client, clients, incomingData.gameId);
         } else if(incomingData.messageType === "stopWatching"){
             GameService.stopWatching(client, clients, incomingData.gameId);
-        } else if(incomingData.messageType === "makeAMove"){
-            var watcherIds = GameService.getWatchersForGame(incomingData.gameId);
-            ConnectFourService.makeAMove(clients, incomingData.gameId, client.user.id, incomingData.column, watcherIds);
+        } else if(incomingData.messageType === "makeAMove") {
+            if (GameService.getGameById(incomingData.gameId)) {
+                var watcherIds = GameService.getWatchersForGame(incomingData.gameId);
+                ConnectFourService.makeAMove(clients, incomingData.gameId, client.user.id, incomingData.column, watcherIds, function (gameId) {
+                    GameService.removeGame(gameId, clients);
+                });
+            }
         }
     });
 

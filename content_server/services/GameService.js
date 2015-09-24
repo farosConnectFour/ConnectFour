@@ -1,5 +1,4 @@
 var WebSocketService = require("./WebSocketService.js");
-var ConnectFourService = require("./ConnectFourService.js");
 var Game = require("../models/Game.js");
 
 var games = [],
@@ -127,7 +126,7 @@ var self = module.exports = {
         });
     },
 
-    joinGame : function(client, clients, gameId){
+    joinGame : function(client, clients, gameId, callbackIfSuccesFull){
         if (clientIsPlaying(client.user.id)) {
             var messageErrorChallenging = {messageType: 'error', error: "you are already playing, So you cannot play in another"};
             WebSocketService.sendToSingleClient(messageErrorChallenging, client);
@@ -139,8 +138,6 @@ var self = module.exports = {
             var messageGameStarted = {messageType: 'gameStarted', gameId: game.gameId, challengerId: game.challenger};
             WebSocketService.broadcast(messageGameStarted, clients);
 
-            ConnectFourService.newGame(game.host, game.challenger, game.gameId, game.rated);
-
             var messagePlayTime = {messageType: 'playTime', game: game.gameId};
             WebSocketService.sendToSingleClient(messagePlayTime, client);
             WebSocketService.sendToSingleClient(messagePlayTime, findClientByUserID(game.host, clients));
@@ -150,6 +147,7 @@ var self = module.exports = {
                 var messageDeleteRoom = {messageType: 'gameClosed', game: roomToDelete};
                 WebSocketService.broadcast(messageDeleteRoom, clients);
             }
+            callbackIfSuccesFull(game);
         }
     },
 
@@ -194,5 +192,17 @@ var self = module.exports = {
                 return game.gameId;
             }
         });
-    }
+    },
+
+    removeGame : function(gameId, clients){
+        games.forEach(function(game, index){
+            if(game.gameId == gameId){
+                games.splice(index,1);
+                var messageDeleteRoom = {messageType: 'gameClosed', game: gameId};
+                WebSocketService.broadcast(messageDeleteRoom, clients);
+            }
+        });
+    },
+
+    getGameById : getGameByGameId
 };
