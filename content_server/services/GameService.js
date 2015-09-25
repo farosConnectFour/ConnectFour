@@ -192,6 +192,7 @@ var self = module.exports = {
                 return game.gameId;
             }
         });
+        return undefined;
     },
 
     removeGame : function(gameId, clients){

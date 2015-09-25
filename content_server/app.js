@@ -27,6 +27,12 @@ contentSocket.on('connection', function(client){
             ChatBoxService.connectUser(client, clients);
         } else if(incomingData.messageType === "logout"){
             ChatBoxService.logUserOut(client, clients);
+            var playingGameId = GameService.getGameIdForPlayer(client.user.id);
+            if(playingGameId){
+                var watcherIds = GameService.getWatchersForGame(playingGameId);
+                ConnectFourService.resign(client, clients, watcherIds,playingGameId);
+                GameService.removeGame(playingGameId, clients);
+            }
             GameService.removeUserFromGames(client, clients);
             client.user = null;
         } else if(incomingData.messageType === 'message'){
