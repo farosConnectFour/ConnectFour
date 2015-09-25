@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(multer());
 app.use(session({ secret: 'this is the secret' }));
 app.use(cookieParser());
-app.use(cors({origin: 'http://10.1.15.94:9999', credentials: true}));
+app.use(cors({origin: 'http://localhost:9999', credentials: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 
