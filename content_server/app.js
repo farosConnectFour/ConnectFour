@@ -58,7 +58,9 @@ contentSocket.on('connection', function(client){
                 });
             }
         } else if(incomingData.messageType === "resign") {
-
+            var watcherIds = GameService.getWatchersForGame(incomingData.gameId);
+            ConnectFourService.resign(client, clients, watcherIds, incomingData.gameId);
+            GameService.removeGame(incomingData.gameId, clients);
         }
     });
 

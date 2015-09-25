@@ -60,7 +60,7 @@ function insertGameToDBOnWinner(game, winner){
         multipleStatements: true
     });
     connection.connect();
-    connection.query('INSERT INTO games SET ?;UPDATE USERS SET points = points + 10 WHERE userID = ?;UPDATE USERS SET points = points - 10 WHERE userID = ?', [{player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner},winner,game.currentPlayer], function(err, result){
+    connection.query('INSERT INTO games SET ?;UPDATE USERS SET points = points + 10 WHERE userID = ?;UPDATE USERS SET points = points - 10 WHERE userID = ?', [{player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner},winner,getLoser(game, winner)], function(err, result){
         requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result[0].insertId, password: 'HAHALOLHAHA'});
     });
     connection.end();
@@ -79,6 +79,10 @@ function insertGameToDBOnDraw(game){
         requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result.insertId, password: 'HAHALOLHAHA'});
     });
     connection.end();
+}
+
+function getLoser(game, winner){
+    return game.players[0] === winner ? game.players[1] : game.players[0];
 }
 
 //Public
@@ -145,8 +149,18 @@ var self = module.exports = {
         }
     },
 
-    resign : function(client, clients, gameId){
+    resign : function(client, clients, watcherIds, gameId){
         var game = getGameByGameId(gameId);
+        game.winner = game.players[0] === client.user.id ? game.players[1] : game.players[0];
+        var resignMessage = {messageType: 'involvedGameClosed', reason: "Closing game in 5 seconds because we got a resigner!! :)"};
+        watcherIds.forEach(function (watcherId) {
+            WebSocketService.sendToSingleClient(resignMessage, findClientByUserID(watcherId, clients));
+        });
+        game.players.forEach(function (playerId) {
+            WebSocketService.sendToSingleClient(resignMessage, findClientByUserID(playerId, clients));
+        });
 
+        insertGameToDBOnWinner(game, game.winner);
+        deleteGame(gameId);
     }
 };
