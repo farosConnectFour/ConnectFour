@@ -37,7 +37,6 @@
 
         $scope.game.leave = function(){
             GameService.resign(gameId);
-            $location.path("/lobby");
         };
 
         GameService.getBoard(gameId);
