@@ -8,7 +8,7 @@
         $scope.$on("involvedGameClosed", function(event, messageData){
             $interval(function(){
                 $location.path("/lobby");
-            },5000);
+            },5000,1);
         });
         $scope.$on("$locationChangeStart",function(event, next, current){
             WatchService.stopWatching(gameId);
