@@ -8,8 +8,6 @@ var express = require('express'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     bodyParser = require('body-parser'),
-    multer = require('multer'),
-    cookieParser = require('cookie-parser'),
     mysql = require('mysql'),
     cors = require('cors');
 
@@ -26,9 +24,7 @@ var connectedUsers = [];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-//app.use(multer());
-app.use(session({ secret: 'this is the secret' }));
-app.use(cookieParser());
+app.use(session({secret : 'blub'}));
 app.use(cors({origin: 'http://localhost:9999', credentials: true}));
 app.use(passport.initialize());
 app.use(passport.session());

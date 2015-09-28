@@ -6,7 +6,6 @@
   "dependencies": {
     "express": "^4.13.3",
     "http": "0.0.0",
-    "http-post": "^0.1.1",
     "mysql": "^2.9.0",
     "requestify": "^0.1.17",
     "sockjs": "^0.3.15"
