@@ -24,7 +24,7 @@ var connectedUsers = [];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session());
+app.use(session({secret : 'blub'}));
 app.use(cors({origin: 'http://localhost:9999', credentials: true}));
 app.use(passport.initialize());
 app.use(passport.session());
