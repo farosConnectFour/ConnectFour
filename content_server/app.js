@@ -28,12 +28,13 @@ contentSocket.on('connection', function(client){
         } else if(incomingData.messageType === "logout"){
             ChatBoxService.logUserOut(client, clients);
             var playingGameId = GameService.getGameIdForPlayer(client.user.id);
-            if(playingGameId){
+            if(playingGameId || playingGameId === 0){
                 var watcherIds = GameService.getWatchersForGame(playingGameId);
-                ConnectFourService.resign(client, clients, watcherIds,playingGameId);
+                ConnectFourService.resign(client, clients, watcherIds, playingGameId, "logout");
                 GameService.removeGame(playingGameId, clients);
+            } else {
+                GameService.removeUserFromGames(client, clients);
             }
-            GameService.removeUserFromGames(client, clients);
             client.user = null;
         } else if(incomingData.messageType === 'message'){
             ChatBoxService.broadcastMessage(client, clients, incomingData.message);
