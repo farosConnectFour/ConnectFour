@@ -12,7 +12,7 @@
         if (socket) {
             callback(socket);
         } else {
-            socket = new SockJS('http://localhost:9998/contentSocket');
+            socket = new SockJS('http://10.1.15.94:9998/contentSocket');
             socket.onopen = function(){
                 callback(socket);
                 console.log('connected');

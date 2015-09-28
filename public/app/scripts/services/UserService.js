@@ -2,7 +2,7 @@
     "use strict";
     var UserService = function($http){
         var getAllPlayers = function(){
-            return $http.get("http://localhost:8080/connectfour/api/users").then(function(response){
+            return $http.get("http://10.1.15.94:8080/connectfour/api/users").then(function(response){
                 var players = [];
                 angular.forEach(response.data, function(value){
                     players.push(new Player(value.userId, value.name, value.points));

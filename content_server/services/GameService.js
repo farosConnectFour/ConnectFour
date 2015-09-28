@@ -187,11 +187,11 @@ var self = module.exports = {
     },
 
     getGameIdForPlayer : function(userId) {
-        games.forEach(function (game) {
-            if (game.host === userId || game.challenger === userId) {
-                return game.gameId;
+        for(var i = 0; i < games.length; i++){
+            if (games[i].host === userId || games[i].challenger === userId) {
+                return games[i].gameId;
             }
-        });
+        }
         return undefined;
     },
 

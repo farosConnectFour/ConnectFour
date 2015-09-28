@@ -60,9 +60,15 @@ function insertGameToDBOnWinner(game, winner){
         multipleStatements: true
     });
     connection.connect();
-    connection.query('INSERT INTO games SET ?;UPDATE USERS SET points = points + 10 WHERE userID = ?;UPDATE USERS SET points = points - 10 WHERE userID = ?', [{player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner},winner,getLoser(game, winner)], function(err, result){
-        requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result[0].insertId, password: 'HAHALOLHAHA'});
-    });
+    if(game.rated) {
+        connection.query('INSERT INTO games SET ?;UPDATE USERS SET points = points + 10 WHERE userID = ?;UPDATE USERS SET points = points - 10 WHERE userID = ?', [{player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner}, winner, getLoser(game, winner)], function (err, result) {
+            requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result[0].insertId, password: 'HAHALOLHAHA'});
+        });
+    } else {
+        connection.query('INSERT INTO games SET ?', {player1: game.players[0], player2: game.players[1], rated: game.rated, winner: winner}, function(err, result){
+            requestify.post("http://localhost:8080/connectfour/api/games", {gameId: result.insertId, password: 'HAHALOLHAHA'});
+        });
+    }
     connection.end();
 }
 
@@ -149,10 +155,21 @@ var self = module.exports = {
         }
     },
 
-    resign : function(client, clients, watcherIds, gameId){
+    resign : function(client, clients, watcherIds, gameId, reason){
         var game = getGameByGameId(gameId);
+        var resignMessage = undefined;
         game.winner = game.players[0] === client.user.id ? game.players[1] : game.players[0];
-        var resignMessage = {messageType: 'involvedGameClosed', reason: "Closing game in 5 seconds because we got a resigner!! :)"};
+        if(reason === 'logout'){
+            resignMessage = {
+                messageType: 'involvedGameClosed',
+                reason: client.user.username + " resigned from this game due to logout"
+            }
+        } else {
+            resignMessage = {
+                messageType: 'involvedGameClosed',
+                reason: "Closing game in 5 seconds because we got a resigner!! :)"
+            };
+        }
         watcherIds.forEach(function (watcherId) {
             WebSocketService.sendToSingleClient(resignMessage, findClientByUserID(watcherId, clients));
         });
