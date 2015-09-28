@@ -1,12 +1,16 @@
 <div class="modal-header">
     <h3>Create Game Room</h3>
 </div>
-<form>
+<form name="newGameForm">
 <div class="modal-body">
         <fieldset>
             <div class="form-group">
                 <label>Room name</label>
-                <input type="text" class="form-control" ng-model="newGame.name" ng-required="true" placeholder="room name">
+                <input name="gameName" type="text" class="form-control" ng-model="newGame.name" required minlength="5" placeholder="room name">
+            </div>
+            <div ng-messages="newGameForm.gameName.$error" role="alert">
+                <div class="alert alert-danger" ng-message="required">You did not enter a game name.</div>
+                <div class="alert alert-danger" ng-message="minlength">Your game name is not long enough.</div>
             </div>
             <label>
                 <input type="checkbox" ng-model="newGame.rated"> Rated
@@ -14,7 +18,7 @@
         </fieldset>
 </div>
 <div class="modal-footer">
-    <button class="btn" ng-click="create()">Create</button>
+    <button ng-disabled="newGameForm.$invalid" class="btn" ng-click="create()">Create</button>
     <button class="btn" ng-click="cancel()">Cancel</button>
 </div>
 </form>

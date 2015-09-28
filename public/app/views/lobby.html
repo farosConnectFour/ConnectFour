@@ -6,7 +6,7 @@
 <div>
     <pagination total-items="games.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
 </div>
-<div class="lobbyGame" ng-repeat="game in games | playerfilter:searchPlayer:players | opengamesonlyfilter : openGamesOnly| offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+<div class="lobbyGame gameFade" ng-repeat="game in games | playerfilter:searchPlayer:players | opengamesonlyfilter : openGamesOnly| offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
     <div class="">
         <p>{{game.name}}</p>
         <p>Host: {{players[game.host-1].name}} ({{players[game.host-1].points}})</p>
