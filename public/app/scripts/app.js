@@ -1,5 +1,5 @@
 'use strict';
-angular.module("app", ['ngRoute','ui.bootstrap'])
+angular.module("app", ['ngRoute','ui.bootstrap','ngMessages','ngAnimate'])
     .config(function($routeProvider){
        $routeProvider
            .when("/", {

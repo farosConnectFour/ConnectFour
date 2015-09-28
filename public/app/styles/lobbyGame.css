@@ -8,3 +8,33 @@
 .lobbyGameCreateButton{
     clear: both;
 }
+
+.gameFade.ng-enter {
+    animation: my_fade_animation 2s linear;
+    -webkit-animation: my_fade_animation 2s linear;
+}
+
+@keyframes my_fade_animation {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+@-webkit-keyframes my_fade_animation {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+.gameFade.ng-leave {
+    animation: my_fade_animation2 2s linear;
+    -webkit-animation: my_fade_animation2 2s linear;
+}
+
+@keyframes my_fade_animation2 {
+    from { opacity:1; }
+    to { opacity:0; }
+}
+
+@-webkit-keyframes my_fade_animation2 {
+    from { opacity:1; }
+    to { opacity:0; }
+}
