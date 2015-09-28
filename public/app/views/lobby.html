@@ -4,7 +4,7 @@
 <label>Open games only: </label>
 <input type="checkbox" ng-model="openGamesOnly">
 <div>
-    <pagination total-items="games.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
+    <pagination total-items="(games | playerfilter:searchPlayer:players | opengamesonlyfilter : openGamesOnly).length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
 </div>
 <div class="lobbyGame gameFade" ng-repeat="game in games | playerfilter:searchPlayer:players | opengamesonlyfilter : openGamesOnly| offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
     <div class="">

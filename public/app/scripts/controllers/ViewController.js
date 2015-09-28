@@ -1,6 +1,6 @@
 (function(){
     "use strict";
-    var ViewController = function($scope,$location, socketFactory){
+    var ViewController = function($scope,$location){
         $scope.games = [];
 
         $scope.$on("initGamesLoaded", function(event, messageData){
@@ -62,5 +62,5 @@
         });
     };
 
-    angular.module("app").controller("ViewController", ["$scope","$location","socketFactory", ViewController]);
+    angular.module("app").controller("ViewController", ["$scope","$location", ViewController]);
 })();
