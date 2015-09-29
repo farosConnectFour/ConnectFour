@@ -23,6 +23,15 @@
         $rootScope.connectToChatBox = function() {
             currentUser = $rootScope.currentUser;
             chatboxService.setUser(currentUser);
+
+            // Listener for initial load-event: getting logged-in users
+            initialLoadListener = $scope.$on("initialLoad", function(event, messageData){
+                $scope.$apply($scope.connectedUsers = messageData.connectedUsers);
+            });
+
+            // Listener for login-events: logging a new connected user
+            //TODO 01: Zorg ervoor dat deze berichten enkel in de general-tab terecht komen. (tip: zet de messages van de tab in $scope.messages)
+            //TODO ?: Als er al een bestaande tab is voor de ingelogde user, zet dan ook in de messages voor deze tab de login-melding
             loginListener = $scope.$on("login", function(event, messageData){
                 if(currentUser.username !== messageData.user.username) {
                     $scope.$apply($scope.connectedUsers.push(messageData.user));
@@ -38,10 +47,6 @@
                     //    scrollTabDown(privateMessageTab);
                     //}
                 }
-            });
-
-            initialLoadListener = $scope.$on("initialLoad", function(event, messageData){
-                $scope.$apply($scope.connectedUsers = messageData.connectedUsers);
             });
 
             logoutListener = $scope.$on("logout", function(event, messageData){
