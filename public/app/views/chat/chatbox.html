@@ -1,13 +1,21 @@
 <div class="chatDiv">
     <div id="chatbox">
         <aside>
-            <my-chat-list></my-chat-list>
+            <!--TODO: maak directives van de chatterslist en de chatters-->
+            <!--<my-chat-list></my-chat-list>-->
+            <div id="usersHeader">Users</div>
+            <ul id="connectedUsersList">
+                <!--<my-chatter ng-repeat="user in connectedUsers"></my-chatter>-->
+                <li class="connectedUser" ng-repeat="user in connectedUsers" ng-click="openPrivateChat(user)">{{user.username}}</li>
+            </ul>
         </aside>
         <section id="textbox">
+            <!--TODO: zet hier een tabset boven, zie angular UI bootstrap-->
             <!--<tabset>-->
                 <!--<tab class='chatTabs' ng-repeat="tab in tabs" ng-click="scrollDown(tab)" active="tab.active">-->
                     <!--<tab-heading>{{tab.username}}</tab-heading>-->
                     <ul class="messages">
+                        <!--TODO: pas settings hier aan zodat de messages uit de tab-messages worden opgehaald-->
                         <li class="message" ng-repeat="message in messages">
                         <!--<li class="message" ng-repeat="message in tab.messages">-->
                             <div class="loggingMessage" ng-if="message.logging">

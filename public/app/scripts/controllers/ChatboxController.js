@@ -18,7 +18,8 @@
         $scope.textInput = '';
         $scope.connectedUsers = [];
         $scope.messages = [];
-        $scope.tabs = [{username: 'General', messages: []}];
+        //TODO: uncomment deze lijn voor het gebruik van de tabs voor private chatting
+        //$scope.tabs = [{username: 'General', messages: []}];
 
         $rootScope.connectToChatBox = function() {
             currentUser = $rootScope.currentUser;
@@ -30,47 +31,49 @@
             });
 
             // Listener for login-events: logging a new connected user
-            //TODO 01: Zorg ervoor dat deze berichten enkel in de general-tab terecht komen. (tip: zet de messages van de tab in $scope.messages)
-            //TODO ?: Als er al een bestaande tab is voor de ingelogde user, zet dan ook in de messages voor deze tab de login-melding
+            //TODO 01: Zorg ervoor dat deze berichten enkel in de general-tab terecht komen.
+            //TODO 08: Als er al een bestaande tab is voor de ingelogde user, zet dan ook in de messages voor deze tab de login-melding
             loginListener = $scope.$on("login", function(event, messageData){
                 if(currentUser.username !== messageData.user.username) {
                     $scope.$apply($scope.connectedUsers.push(messageData.user));
-                    //$scope.messages = findGeneralTab().messages;
                     $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
                     scrollTabDown();
+                    //$scope.$apply(findGeneralTab().messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
                     //scrollTabDown(findGeneralTab());
 
                     //if(findTabByUsername(messageData.user.username)){
                     //    var privateMessageTab = findTabByUsername(messageData.user.username);
-                    //    $scope.messages = privateMessageTab.messages;
-                    //    $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
+                    //    $scope.$apply(privateMessageTab.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
                     //    scrollTabDown(privateMessageTab);
                     //}
                 }
             });
 
+            //TODO 02: idem TODO 01
+            //TODO 09: idem TODO 08
             logoutListener = $scope.$on("logout", function(event, messageData){
-                //$scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(messageData.username), 1));
                 $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
                 scrollTabDown();
+                //$scope.$apply(findGeneralTab().messages.push({user: messageData.username, message: 'left the room', logging: true}));
                 //scrollTabDown(findGeneralTab());
 
                 //if(findTabByUsername(messageData.username)){
                 //    var privateMessageTab = findTabByUsername(messageData.username);
-                //    $scope.messages = privateMessageTab.messages;
-                //    $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
+                //    $scope.$apply(privateMessageTab.messages.push({user: messageData.username, message: 'left the room', logging: true}));
                 //    scrollTabDown(privateMessageTab);
                 //}
             });
 
+            //TODO 03: idem TODO 01
             messageListener = $scope.$on("message", function(event, messageData){
-                //$scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
                 scrollTabDown();
+                //$scope.$apply(findGeneralTab().messages.push({sender: messageData.username, message: messageData.message, logging: false}));
                 //scrollTabDown(findGeneralTab());
             });
 
+            //TODO 04: plaats de private message in de juiste tab (maak een nieuwe tab aan als er voor deze user nog geen tab is)
             privateMessageListener = $scope.$on("privateMessage", function(event, messageData){
                 console.log(messageData);
                 //var privateMessageTab = undefined;
@@ -85,9 +88,8 @@
                 //        privateMessageTab = findTabByUsername(messageData.sender);
                 //    }
                 //}
-                //$scope.messages = privateMessageTab.messages;
                 //messageData.logging = false;
-                //$scope.$apply($scope.messages.push(messageData));
+                //$scope.$apply(privateMessageTab.messages.push(messageData));
                 //scrollTabDown(privateMessageTab);
             });
         };
@@ -102,6 +104,7 @@
             });
         };
 
+        //TODO 05: ga na welke tab actief is bij het verzenden van een message. Indien een private message: voer volgende methode uit: chatboxService.sendMessage({messageType: 'privateMessage', sender: currentUser.username, receiver: activeTab.username, message: $scope.textInput});
         $scope.sendMessage = function(){
             if($scope.textInput){
                 //var activeTab = $scope.active();
@@ -118,6 +121,7 @@
             return username !== 'General';
         };
 
+        //TODO 06: ga na of er voor deze user al een tab bestaat, zo ja, maar deze actief, zo nee, maak een nieuwe tab aan en maak deze actief.
         $scope.openPrivateChat = function(user) {
             console.log('TODO: open a private chat tab for user: ' + user.username);
             //if(user.username !== currentUser.username) {
@@ -148,6 +152,7 @@
             scrollTabDown(tab);
         };
 
+        //TODO 07: zoek de juiste index voor de meegegeven tab en zorg dat voor deze tab naar beneden gescrolld wordt.
         function scrollTabDown(tab){
             //var tabIndex = $scope.tabs.indexOf(tab);
             //document.getElementsByClassName('messages')[tabIndex].scrollTop = document.getElementsByClassName('messages')[tabIndex].scrollHeight;
