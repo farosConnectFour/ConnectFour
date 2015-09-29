@@ -26,14 +26,12 @@
             loginListener = $scope.$on("login", function(event, messageData){
                 if(currentUser.username !== messageData.user.username) {
                     $scope.$apply($scope.connectedUsers.push(messageData.user));
-                    $scope.messages = findGeneralTab().messages;
-                    $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
+                    $scope.$apply(findGeneralTab().messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
                     scrollTabDown(findGeneralTab());
 
                     if(findTabByUsername(messageData.user.username)){
                         var privateMessageTab = findTabByUsername(messageData.user.username);
-                        $scope.messages = privateMessageTab.messages;
-                        $scope.$apply($scope.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
+                        $scope.$apply(privateMessageTab.messages.push({user: messageData.user.username, message: 'joined the room', logging: true}));
                         scrollTabDown(privateMessageTab);
                     }
                 }
@@ -44,22 +42,19 @@
             });
 
             logoutListener = $scope.$on("logout", function(event, messageData){
-                $scope.messages = findGeneralTab().messages;
                 $scope.$apply($scope.connectedUsers.splice(getIndexConnectedUserByUsername(messageData.username), 1));
-                $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
+                $scope.$apply(findGeneralTab().messages.push({user: messageData.username, message: 'left the room', logging: true}));
                 scrollTabDown(findGeneralTab());
 
                 if(findTabByUsername(messageData.username)){
                     var privateMessageTab = findTabByUsername(messageData.username);
-                    $scope.messages = privateMessageTab.messages;
-                    $scope.$apply($scope.messages.push({user: messageData.username, message: 'left the room', logging: true}));
+                    $scope.$apply(privateMessageTab.messages.push({user: messageData.username, message: 'left the room', logging: true}));
                     scrollTabDown(privateMessageTab);
                 }
             });
 
             messageListener = $scope.$on("message", function(event, messageData){
-                $scope.messages = findGeneralTab().messages;
-                $scope.$apply($scope.messages.push({sender: messageData.username, message: messageData.message, logging: false}));
+                $scope.$apply(findGeneralTab().messages.push({sender: messageData.username, message: messageData.message, logging: false}));
                 scrollTabDown(findGeneralTab());
             });
 
@@ -76,9 +71,8 @@
                         privateMessageTab = findTabByUsername(messageData.sender);
                     }
                 }
-                $scope.messages = privateMessageTab.messages;
                 messageData.logging = false;
-                $scope.$apply($scope.messages.push(messageData));
+                $scope.$apply(privateMessageTab.messages.push(messageData));
                 scrollTabDown(privateMessageTab);
             });
         };
@@ -113,7 +107,6 @@
             if(user.username !== currentUser.username) {
                 var privateTab = findTabByUsername(user.username);
                 if (!privateTab) {
-                    console.log(user);
                     user.messages = [];
                     $scope.tabs.push(user);
                     privateTab = findTabByUsername(user.username);
