@@ -4,12 +4,12 @@
             <my-chat-list></my-chat-list>
         </aside>
         <section id="textbox">
-            <tabset>
-                <tab class='chatTabs' ng-repeat="tab in tabs" ng-click="scrollDown(tab)" active="tab.active">
-                    <tab-heading>{{tab.username}}</tab-heading>
-                    <!--<tab-heading>{{tab.username}}  <i class="glyphicon glyphicon-remove" ng-show="isPrivateChatTab(tab.username)" ng-click="closePrivateChatTab(tab.username)"></i></a></tab-heading>-->
+            <!--<tabset>-->
+                <!--<tab class='chatTabs' ng-repeat="tab in tabs" ng-click="scrollDown(tab)" active="tab.active">-->
+                    <!--<tab-heading>{{tab.username}}</tab-heading>-->
                     <ul class="messages">
-                        <li class="message" ng-repeat="message in tab.messages">
+                        <li class="message" ng-repeat="message in messages">
+                        <!--<li class="message" ng-repeat="message in tab.messages">-->
                             <div class="loggingMessage" ng-if="message.logging">
                                 <span class="usernameLogMessage">{{message.user}}</span> {{message.message}}
                             </div>
@@ -18,8 +18,8 @@
                             </div>
                         </li>
                     </ul>
-                </tab>
-            </tabset>
+                <!--</tab>-->
+            <!--</tabset>-->
         </section>
         <section id="inputbar">
             <form ng-submit="sendMessage()">

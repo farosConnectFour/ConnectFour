@@ -42,10 +42,10 @@ aside .connectedUser{
 }
 
 .messages{
-    height: 75%;
+    height: 100%;
     list-style: none;
     padding: 5px;
-    margin: 0 5px 0 0;
+    margin: 5px 5px 0 0;
     overflow-y: auto;
 }
 
