@@ -2,19 +2,6 @@
     "use strict";
     angular.module("app")
         .filter("opengamesonlyfilter", function() {
-            return function(games, condition) {
-                if (condition) {
-                    var out = [];
-                    if (games) {
-                        angular.forEach(games, function (game) {
-                            if (!game.challenger) {
-                                out.push(game);
-                            }
-                        });
-                        return out;
-                    }
-                }
-                return games;
-            }
+            //TODO 01: maak een filter die enkel de games die geen challenger hebben terug geeft.
         })
 })();

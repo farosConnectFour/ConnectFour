@@ -1,12 +1,15 @@
 <h2>Lobby</h2>
 <label>Search for player: </label>
 <input type="text" ng-model="searchPlayer">
-<label>Open games only: </label>
-<input type="checkbox" ng-model="openGamesOnly">
+<!--TODO 01: Maak een checkbox waar aangevinkt kan worden of alleen de openstaande games getoond worden -->
+<!--<label>Open games only: </label>-->
+<!--<input type="checkbox" ng-model="openGamesOnly">-->
 <div>
-    <pagination total-items="(games | playerfilter:searchPlayer:players | opengamesonlyfilter : openGamesOnly).length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
+    <!--TODO 02: filter de games zodat enkel de openstaande games mee in rekening gebracht worden voor het totale aantal items in de paginatie -->
+    <pagination total-items="(games | playerfilter:searchPlayer:players).length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
 </div>
-<div class="lobbyGame gameFade" ng-repeat="game in games | playerfilter:searchPlayer:players | opengamesonlyfilter : openGamesOnly| offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+<!--TODO 03: filter de games zodat enkel de openstaande games getoond worden -->
+<div class="lobbyGame gameFade" ng-repeat="game in games | playerfilter:searchPlayer:players | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
     <div class="">
         <p>{{game.name}}</p>
         <p>Host: {{players[game.host-1].name}} ({{players[game.host-1].points}})</p>

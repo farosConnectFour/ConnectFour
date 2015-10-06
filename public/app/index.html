@@ -53,28 +53,102 @@
     <script src="scripts/controllers/GameController.js"></script>
     <script src="scripts/controllers/WatchController.js"></script>
     <script src="scripts/controllers/LatestGamesController.js"></script>
-    <!--directives-->
-    <script src="scripts/directives/myleaderboard.js"></script>
-    <script src="scripts/directives/mylatestgames.js"></script>
-    <script src="scripts/directives/mychatbox.js"></script>
-    <script src="scripts/directives/myinfomessage.js"></script>
-    <script src="scripts/directives/mywarningmessage.js"></script>
-    <script src="scripts/directives/mychatlist.js"></script>
-    <script src="scripts/directives/mychatter.js"></script>
+    <script src="scripts/controllers/InfoWarningMessageController.js"></script>
 
     <script src="scripts/logout.js"></script>
 </head>
 <body>
     <div class="container" ng-controller="HomeController">
         <div class="navigationDiv" ng-include="'views/menu.html'"></div>
-        <my-warning-message warning="warning"></my-warning-message>
-        <my-info-message info="info"></my-info-message>
+
+        <!--TODO: maak directives van de warningmessage en infomessage-->
+        <div ng-controller="infowarningmessagecontroller">
+            <div class="alert alert-danger" role="alert" ng-show="warning">
+                {{warning}}
+                <button class="pull-right" ng-click="closeWarning()">Close</button>
+            </div>
+            <div class="alert alert-info" role="alert" ng-show="info">
+                {{info}}
+                <button class="pull-right" ng-click="closeInfo()">Close</button>
+            </div>
+        </div>
+
         <div class="contentDiv" ng-controller="IndexController">
             <div class="gameDiv" ng-controller="ViewController" ng-view></div>
-            <my-leaderboard players="players"></my-leaderboard>
-            <my-latest-games></my-latest-games>
+            <!--TODO: maak directives van het leaderbord en de latest games-->
+            <div class="leaderboardDiv" ng-controller="LeaderBoardController">
+                <h3>Leaderboards</h3>
+                <label>Search for player: </label>
+                <input ng-model="searchText" type="text">
+                <pagination total-items="(players | filter:{name:searchText}).length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <td>Username</td>
+                        <td>Ranking Points</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="player in players | filter:{name:searchText} | orderBy:'-points' | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+                        <td>{{player.name}}</td>
+                        <td>{{player.points}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="latestGamesDiv" ng-controller = "LatestGamesController">
+                <h3>Latest Games</h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <td>Player 1</td>
+                        <td>Player 2</td>
+                        <td>Winner</td>
+                        <td>Rated</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="game in latestGames">
+                        <td>{{game.player1}}</td>
+                        <td>{{game.player2}}</td>
+                        <td>{{game.winner || "Draw"}}</td>
+                        <td>{{game.rated}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <my-chatbox></my-chatbox>
+        <!--TODO: maak directives van de chatbox, chatterslist en de chatters-->
+        <div class="chatDiv">
+            <div id="chatbox">
+                <aside>
+                    <div id="usersHeader">Users</div>
+                    <ul id="connectedUsersList">
+                        <li class="connectedUser" ng-repeat="user in connectedUsers" ng-click="openPrivateChat(user)">{{user.username}}</li>
+                    </ul>
+                </aside>
+                <section id="textbox">
+                    <!--TODO: zet hier een tabset boven, zie angular UI bootstrap-->
+                    <ul class="messages">
+                        <!--TODO: pas settings hier aan zodat de messages uit de tab-messages worden opgehaald-->
+                        <li class="message" ng-repeat="message in messages">
+                            <div class="loggingMessage" ng-if="message.logging">
+                                <span class="usernameLogMessage">{{message.user}}</span> {{message.message}}
+                            </div>
+                            <div ng-if="!message.logging">
+                                <span class="usernameMessage">{{message.sender}}</span> {{message.message}}
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section id="inputbar">
+                    <form ng-submit="sendMessage()">
+                        <input class="form-control" id="textinput" type="text" ng-model="textInput">
+                        <input class="btn btn-primary" type="submit" value="Send">
+                    </form>
+                </section>
+            </div>
+        </div>
     </div>
 </body>
 </html>
