@@ -62,7 +62,7 @@
         <div class="navigationDiv" ng-include="'views/menu.html'"></div>
 
         <!--TODO: maak directives van de warningmessage en infomessage-->
-        <div ng-controller="infowarningmessagecontroller">
+        <div ng-controller="InfoWarningMessageController">
             <div class="alert alert-danger" role="alert" ng-show="warning">
                 {{warning}}
                 <button class="pull-right" ng-click="closeWarning()">Close</button>

@@ -6,9 +6,6 @@
     "use strict";
     var infoWarningMessageController = function($scope){
 
-        $scope.info = undefined;
-        $scope.warning = undefined;
-
         $scope.closeWarning = function(){
             $scope.warning = undefined;
         };
