@@ -2,10 +2,7 @@
     var lobbyController = function($scope, $modal, $location, LobbyService){
 
         $scope.createGame = function(){
-            var modelInstance = $modal.open({
-                templateUrl: "views/modals/newGame.html",
-                controller: "NewGameController"
-            });
+            //TODO: open een nieuwe modalInstance: templateURL: "views/modals/newGame.html", controller: "NewGameController"
         };
 
         $scope.joinGame = function(gameId){

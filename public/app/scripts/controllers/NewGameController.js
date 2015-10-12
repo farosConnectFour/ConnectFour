@@ -1,17 +1,15 @@
 (function(){
-    var newGameController = function($scope, $modalInstance, LobbyService){
-        $scope.newGame = {
-            name: null,
-            rated: true
-        };
+    var newGameController = function($scope, $modalInstance){
+
+        //TODO: maak in de scope een nieuw object 'newGame' aan, met de nodige properties (zie html) en true als standaardwaarde voor een rated game
+
         $scope.create = function(){
-            LobbyService.createGame($scope.newGame);
-            $modalInstance.close();
+            //TODO: createGame uit LobbyService aanroepen (injecteren in de controller!) met de juiste parameter, en sluit de modalInstance.
         };
         $scope.cancel = function(){
-            $modalInstance.dismiss("cancel");
+            //TODO: sluit de modalInstance
         }
     };
 
-    angular.module("app").controller("NewGameController", ["$scope", "$modalInstance", "LobbyService", newGameController])
+    angular.module("app").controller("NewGameController", ["$scope", "$modalInstance", newGameController])
 })();
