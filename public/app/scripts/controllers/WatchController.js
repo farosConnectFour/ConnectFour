@@ -1,14 +1,13 @@
 (function(){
     "use strict";
-    var watchController = function($scope, $location, $routeParams, $interval, WatchService, GameService){
+    var watchController = function($scope, $location, WatchService, GameService){
+        //TODO: haal het gameId op via $routeParams, injecteer deze dependency ook! (Dit zorgt ervoor dat bij het watchen van een game ook het juiste bord wordt opgevraagd
         var gameId = $routeParams.gameId;
 
         $scope.game = {};
 
         $scope.$on("involvedGameClosed", function(event, messageData){
-            $interval(function(){
-                $location.path("/lobby");
-            },5000,1);
+            //TODO: redirect na 5 seconden naar '/lobby', gebruik hiervoor $interval (injecteer deze dependency ook! zorg voor maar 1 herhaling!)
         });
         $scope.$on("$locationChangeStart",function(event, next, current){
             WatchService.stopWatching(gameId);
@@ -34,5 +33,5 @@
 
         GameService.getBoard(gameId);
     };
-    angular.module("app").controller("WatchController", ["$scope","$location", "$routeParams", "$interval","WatchService", "GameService", watchController])
+    angular.module("app").controller("WatchController", ["$scope","$location","WatchService", "GameService", watchController])
 })();

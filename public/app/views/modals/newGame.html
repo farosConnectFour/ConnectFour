@@ -6,19 +6,18 @@
         <fieldset>
             <div class="form-group">
                 <label>Room name</label>
-                <input name="gameName" type="text" class="form-control" ng-model="newGame.name" required minlength="5" placeholder="room name">
+                <!--TODO: maak gameName required en geef een minimum lengte van 5-->
+                <input name="gameName" type="text" class="form-control" ng-model="newGame.name" placeholder="room name">
             </div>
-            <div ng-messages="newGameForm.gameName.$error" role="alert">
-                <div class="alert alert-danger" ng-message="required">You did not enter a game name.</div>
-                <div class="alert alert-danger" ng-message="minlength">Your game name is not long enough.</div>
-            </div>
+            <!--TODO: error messages tonen via ng-message (gebruik "newGameForm.gameName.$error"), voeg bootstrap classes "alert alert-danger" toe -->
             <label>
                 <input type="checkbox" ng-model="newGame.rated"> Rated
             </label>
         </fieldset>
 </div>
 <div class="modal-footer">
-    <button ng-disabled="newGameForm.$invalid" class="btn" ng-click="create()">Create</button>
+    <!--TODO: maak create button enkel enabled als form valid is (op basis van "newGameForm.$invalid") -->
+    <button class="btn" ng-click="create()">Create</button>
     <button class="btn" ng-click="cancel()">Cancel</button>
 </div>
 </form>

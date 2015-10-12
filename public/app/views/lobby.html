@@ -9,7 +9,8 @@
 <!--TODO 03: filter de games inline zodat enkel de openstaande games getoond worden -->
 <!--TODO ??: pas het aantal getoonde games aan in functie van de paginatie, gebruik als filters: "offset: (currentPage-1)*itemsPerPage" en "limitTo: itemsPerPage" -->
 <!--TODO 05: maak gebruik van een externe filter (playerfilter, geef de juiste parameters mee aan de filter) om enkel de games te tonen waarvan de host of de challenger de ingegeven waarde bevat -->
-<div class="lobbyGame gameFade" ng-repeat="game in games">
+<!--TODO ??: ngAnimatie (nieuwe game: fade in; game verwijderd: fade out) - voeg een klasse toe aan de div waarmee je binnen css het effect gaat specifiëren-->
+<div class="lobbyGame" ng-repeat="game in games">
     <div class="">
         <p>{{game.name}}</p>
         <p>Host: {{players[game.host-1].name}} ({{players[game.host-1].points}})</p>

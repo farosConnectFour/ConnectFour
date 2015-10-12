@@ -23,13 +23,7 @@
             $scope.$apply();
         });
         $scope.$on("newWatcher", function(event, messageData){
-            var watcherId = messageData.watcherId;
-            $scope.games.forEach(function(game){
-                if(game.gameId === messageData.gameId){
-                    game.watchers.push(watcherId);
-                }
-            });
-            $scope.$apply();
+            //TODO: plaats het watcherId van de nieuwe watcher bij de juiste game uit de $scope.games (haal de nodige data uit de messageData), voer nadien "$scope.$apply()" uit (wijziging in model via Socket behoort niet tot standaard angular digest loop, dus om wijzigingen zichtbaar te krijgen, moet je dit manueel aangeven.)
         });
         $scope.$on('watcherLeft', function(event, messageData){
             for(var i = 0; i < $scope.games.length; i++){
@@ -42,8 +36,7 @@
         });
 
         $scope.$on("watchTime", function(event, messageData){
-            $location.path("/watch/" + messageData.gameId);
-            $scope.$apply();
+            //TODO: redirect naar "/watch/gameId", haal de gameId uit de messageData. voer nadien $scope.$apply() uit.
         });
 
         $scope.$on("gameStarted", function(event, messageData){

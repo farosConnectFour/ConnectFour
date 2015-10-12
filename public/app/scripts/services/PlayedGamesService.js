@@ -1,18 +1,14 @@
 (function(){
     "use strict";
-    var PlayedGamesService = function($http){
-        var getLast5Games = function(){
-            return $http.get("http://10.1.15.94:8080/connectfour/api/games").then(function(response){
-                var games = [];
-                angular.forEach(response.data, function(value){
-                    games.push(new PlayedGame(value.gameId, value.player1, value.player2, value.winner, value.rated));
-                });
-                return games;
-            });
+    var PlayedGamesService = function(){
+        var getLast3Games = function(){
+            //TODO: haal de laatste 3 games op via een REST-call. Doe een $http.get naar xxx.xxx.xxx.xxx:8080/connectfour/api/games ($http-dependency injecteren!)
+            //TODO: get-call geeft een promise terug, verwerk deze en zet response-body om naar een array. Deze array van 3 games is wat de fuctie returned.
+            return [];
         };
         return {
-            getLast5Games: getLast5Games
+            getLast3Games: getLast3Games
         };
     };
-    angular.module("app").service("PlayedGamesService", ["$http", PlayedGamesService]);
+    angular.module("app").service("PlayedGamesService", PlayedGamesService);
 })();

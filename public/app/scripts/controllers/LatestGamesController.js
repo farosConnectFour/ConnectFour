@@ -2,7 +2,7 @@
     "use strict";
     var LatestGamesController = function($scope, PlayedGamesService){
         $scope.latestGames = [];
-        PlayedGamesService.getLast5Games().then(function(response){
+        PlayedGamesService.getLast3Games().then(function(response){
             $scope.latestGames = response;
         });
         $scope.connect = function(){
