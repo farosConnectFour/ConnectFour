@@ -77,10 +77,10 @@
             <div class="gameDiv" ng-controller="ViewController" ng-view></div>
             <!--TODO: maak directives van het leaderbord en de latest games-->
             <div class="leaderboardDiv" ng-controller="LeaderBoardController">
-                <h3>Leaderboards</h3>
+                <h3>Leaderboard</h3>
                 <!--TODO: Maak een textinput waar kan aangegeven worden op welke spelers gefilterd moet worden in het leaderbord, en link aan model 'searchText'-->
+                <!--TODO: Maak paginatie aan, gebruik itemsPerPage, currentPage, en maxSize uit scope (zie LeaderbordController), zorg voor boundary links -->
                 <!--TODO: filter het leaderbord inline op basis van de searchText zodat enkel de overeenkomstige players mee in rekening gebracht worden voor het totale aantal items in de paginatie -->
-                <pagination total-items="players.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -89,8 +89,9 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <!--TODO: pas het aantal tr en de items aan in functie van de paginatie, gebruik als filters: "offset: (currentPage-1)*itemsPerPage" en "limitTo: itemsPerPage"-->
                     <!--TODO: filter het leaderbord inline op basis van de searchText zodat enkel de overeenkomstige players getoond worden -->
-                    <tr ng-repeat="player in players | orderBy:'-points' | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+                    <tr ng-repeat="player in players | orderBy:'-points'">
                         <td>{{player.name}}</td>
                         <td>{{player.points}}</td>
                     </tr>

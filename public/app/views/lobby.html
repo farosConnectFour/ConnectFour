@@ -3,12 +3,13 @@
 <!--TODO 01: Maak een checkbox waar aangevinkt kan worden of alleen de openstaande games getoond worden, link aan model 'openGamesOnly' -->
 <div>
     <!--TODO 02: filter de games inline zodat enkel de openstaande games mee in rekening gebracht worden voor het totale aantal items in de paginatie -->
+    <!--TODO ??: maak paginatie aan, gebruik itemsPerPage, currentPage en maxSize uit scope (zie LobbyController), zorg voor boundary links -->
     <!--TODO 05: maak gebruik van een externe filter (playerfilter, geef de juiste parameters mee aan de filter) zodat enkel de games te tonen waarvan de host of de challenger de ingegeven waarde bevat mee in rekening gebracht worden voor het totale aantal items in de paginatie -->
-    <pagination total-items="games.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
 </div>
 <!--TODO 03: filter de games inline zodat enkel de openstaande games getoond worden -->
+<!--TODO ??: pas het aantal getoonde games aan in functie van de paginatie, gebruik als filters: "offset: (currentPage-1)*itemsPerPage" en "limitTo: itemsPerPage" -->
 <!--TODO 05: maak gebruik van een externe filter (playerfilter, geef de juiste parameters mee aan de filter) om enkel de games te tonen waarvan de host of de challenger de ingegeven waarde bevat -->
-<div class="lobbyGame gameFade" ng-repeat="game in games | offset: (currentPage-1)*itemsPerPage | limitTo: itemsPerPage">
+<div class="lobbyGame gameFade" ng-repeat="game in games">
     <div class="">
         <p>{{game.name}}</p>
         <p>Host: {{players[game.host-1].name}} ({{players[game.host-1].points}})</p>
