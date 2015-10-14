@@ -2,11 +2,12 @@
     "use strict";
     var LatestGamesController = function($scope, PlayedGamesService){
         $scope.latestGames = [];
-        PlayedGamesService.getLast3Games().then(function(response){
-            $scope.latestGames = response;
-        });
+        //TODO: uncomment this
+        //PlayedGamesService.getLast3Games().then(function(response){
+        //    $scope.latestGames = response;
+        //});
         $scope.connect = function(){
-            var socket = new SockJS("http://10.1.15.94:8080/connectfour");
+            var socket = new SockJS("http://localhost:8080/connectfour");
             var stompClient = Stomp.over(socket);
             stompClient.connect({}, function() {
                 $scope.connected = true;

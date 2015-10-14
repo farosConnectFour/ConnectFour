@@ -8,6 +8,8 @@
 
     var chatboxController = function($rootScope, $scope, chatboxService){
 
+        console.log("test");
+
         var currentUser,
             loginListener,
             initialLoadListener,
