@@ -7,11 +7,11 @@
 
         socketFactory.getSocket(function(s){
             socket = s;
-            socket.onmessage = function(data){
+            socket.onmessage = function(data) {
                 var messageData = JSON.parse(data.data);
-                if(messageData.messageType === "login"){
+                if (messageData.messageType === "login") {
                     $scope.$broadcast("login", messageData);
-                } else if (messageData.messageType === "message"){
+                } else if (messageData.messageType === "message") {
                     $scope.$broadcast("message", messageData);
                 } else if (messageData.messageType === "privateMessage"){
                     $scope.$broadcast("privateMessage", messageData);
