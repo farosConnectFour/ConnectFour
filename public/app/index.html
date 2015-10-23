@@ -78,9 +78,9 @@
             <!--TODO: maak directives van het leaderbord en de latest games-->
             <div class="leaderboardDiv" ng-controller="LeaderBoardController">
                 <h3>Leaderboard</h3>
-                <!--TODO: Maak een textinput waar kan aangegeven worden op welke spelers gefilterd moet worden in het leaderbord, en link aan model 'searchText'-->
-                <!--TODO: Maak paginatie aan, gebruik itemsPerPage, currentPage, en maxSize uit scope (zie LeaderbordController), zorg voor boundary links -->
-                <!--TODO: filter het leaderbord inline op basis van de searchText zodat enkel de overeenkomstige players mee in rekening gebracht worden voor het totale aantal items in de paginatie -->
+                <!--TODO 01: Maak een textinput waar kan aangegeven worden op welke spelers gefilterd moet worden in het leaderbord, en link aan model 'searchText'-->
+                <!--TODO I: Maak paginatie aan, gebruik itemsPerPage, currentPage, en maxSize uit scope (zie LeaderbordController), zorg voor boundary links -->
+                <!--TODO II: filter het leaderbord inline op basis van de searchText zodat enkel de overeenkomstige players mee in rekening gebracht worden voor het totale aantal items in de paginatie -->
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -89,8 +89,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!--TODO: pas het aantal tr en de items aan in functie van de paginatie, gebruik als filters: "offset: (currentPage-1)*itemsPerPage" en "limitTo: itemsPerPage"-->
-                    <!--TODO: filter het leaderbord inline op basis van de searchText zodat enkel de overeenkomstige players getoond worden -->
+                    <!--TODO 02: filter het leaderbord inline op basis van de searchText zodat enkel de overeenkomstige players getoond worden -->
+                    <!--TODO III: pas het aantal tr en de items aan in functie van de paginatie, gebruik als filters: "offset: (currentPage-1)*itemsPerPage" en "limitTo: itemsPerPage"-->
                     <tr ng-repeat="player in players | orderBy:'-points'">
                         <td>{{player.name}}</td>
                         <td>{{player.points}}</td>
@@ -131,9 +131,9 @@
                     </ul>
                 </aside>
                 <section id="textbox">
-                    <!--TODO: zet hier een tabset boven, zie angular UI bootstrap-->
+                    <!--TODO I: zet hier een tabset boven, zie angular UI bootstrap-->
                     <ul class="messages">
-                        <!--TODO: pas settings hier aan zodat de messages uit de tab-messages worden opgehaald-->
+                        <!--TODO II: pas settings hier aan zodat de messages uit de tab-messages worden opgehaald-->
                         <li class="message" ng-repeat="message in messages">
                             <div class="loggingMessage" ng-if="message.logging">
                                 <span class="usernameLogMessage">{{message.user}}</span> {{message.message}}
