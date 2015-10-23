@@ -2,21 +2,9 @@
     "use strict";
     angular.module("app")
         .filter("playerfilter", function() {
-            return function(games, searchPlayer, players) {
-                var out = [];
-                if(searchPlayer) {
-                    angular.forEach(games, function (game) {
-                        if (players[game.host - 1].name.toLowerCase().indexOf(searchPlayer.toLowerCase()) > -1) {
-                            out.push(game);
-                        } else if(game.challenger && players[game.challenger - 1].name.toLowerCase().indexOf(searchPlayer.toLowerCase()) > -1){
-                            out.push(game);
-                        }
-                    });
-                    return out;
-                } else{
-                    return games;
-                }
-
+            //TODO: maak een filter die enkel de games weergeeft waar de gezochte gebruiker host/challenger is (voeg de nodige parameters toe)
+            return function(games) {
+                return games;
             };
         })
 })();
