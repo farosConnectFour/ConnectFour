@@ -7,7 +7,7 @@
         $scope.game = {};
 
         $scope.$on("involvedGameClosed", function(event, messageData){
-            //TODO: redirect na 5 seconden naar '/lobby', gebruik hiervoor $interval (injecteer deze dependency ook! zorg voor maar 1 herhaling!)
+            //TODO: redirect na 5 seconden naar '/lobby', gebruik hiervoor $interval (injecteer deze dependency ook!) zorg voor maar 1 herhaling!
         });
         $scope.$on("$locationChangeStart",function(event, next, current){
             WatchService.stopWatching(gameId);
