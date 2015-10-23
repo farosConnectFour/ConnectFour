@@ -43,6 +43,7 @@ aside .connectedUser{
 
 .messages{
     height: 75%;
+    max-height: 140px;
     list-style: none;
     padding: 5px;
     margin: 0 5px 0 0;
