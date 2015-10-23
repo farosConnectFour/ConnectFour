@@ -1,5 +1,5 @@
 <div class="leaderboardDiv">
-    <h3>Leaderboards</h3>
+    <h3>Leaderboard</h3>
     <label>Search for player: </label>
     <input ng-model="searchText" type="text">
     <pagination total-items="(players | filter:{name:searchText}).length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></pagination>
